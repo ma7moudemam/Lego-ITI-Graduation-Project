@@ -10,6 +10,8 @@
 - /cart
 - /wishlist
 - /dashboard
+- /shippers
+
 ```
 > ## **Schema**
 
@@ -17,7 +19,11 @@
 * [`Product`](#product)
 * [`Review`](#review)
 * [`Stock`](#stock)
-* [`Category`](#category)
+* [`Orders`](#category)
+* [`Cart`](#cart)
+* [`Shippers`](#shippers)
+* [`Payment`](#payment)
+* [`BlackList`](#blacklist)
 
 
  ## **`User`**
@@ -34,7 +40,6 @@
         },
     password: String,
     age : Number,
-    review : [{type:Number,ref:"review"}],
     wish_list: [{type:Number,ref:"product"}],
 }
 ```
@@ -46,9 +51,8 @@
     images:[{type:String}],
     price:Number,
     rating:Number,
-    review: [{type:Number,ref:"review"}],
-    stock: {type:Number,ref:"stock"},
-    category: {type:Number,ref:"category"}
+    amount:Number,
+    sold:Number
 }
 ```
 ## **`Review`**
@@ -67,10 +71,6 @@
 {
     id : Number,
     product :{type:Number,ref:"product"},
-    amount : Number,
-    remaining : Number,
-    sold : Number, 
-    total_price : Number
 }
 ```
 
@@ -79,8 +79,67 @@
 {
     _id: Number, 
     name: String,
-    products: {type:Number,ref:"prouct"}
+    product: {type:Number,ref:"prouct"}
 }
 ```
-> ## **ERD**
-[`ERDiagram`](./Lego.pdf)
+
+## **`Orders`**
+``` js
+{
+    _id: Number, 
+    user: String,
+    product: [{
+        product:{type:Number,ref:"prouct"},
+        amount:Number,
+        unit_price:Number
+        }],
+    shippers:{type:Number,ref:"shippers"},
+    tax:Number,
+    payment:{type:Number,ref:"payment"},
+    order_date:Date,
+    order_status:Number
+}
+```
+
+## **`Cart`**
+``` js
+{
+    _id: Number, 
+    total_price: Number,
+    product: [{type:Number,ref:"prouct"}],
+    user:{type:String,ref:"user"}
+}
+```
+
+## **`Shippers`**
+``` js
+{
+    _id: Number, 
+    name: String,
+    contact:[{
+        email:String,
+        phone_number:Number
+    }]
+}
+```
+
+## **`Payment`**
+``` js
+{
+    _id: Number, 
+    user:{type:String,ref:"user"},
+    card_number:{type:Number,min:16,max:16},
+    exp_month:{type:Number,min:2,max:2},
+    exp_year:{type:Number,min:2,max:2},
+    CVV:{type:Number,min:3,max:3}
+}
+```
+
+## **`BlackList`**
+``` js
+{
+    _id: Number, 
+    user:{type:String,ref:"user"}
+}
+```
+
