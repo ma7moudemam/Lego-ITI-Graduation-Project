@@ -12,6 +12,6 @@ const productModel = new mongoose.Schema({
     review: [{ type: Number, ref: "review" }],
     rating: { type: Number }
 }, { _id: false });
-
+//test comment
 studentSchema.plugin(productAutoInc, { id: "productAutoIncrement", inc_field: "_id" });
 module.exports = mongoose.model("product", productModel);
