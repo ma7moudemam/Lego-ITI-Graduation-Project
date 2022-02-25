@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 const autoIncrement = require("mongoose-sequence")(mongoose);
 const schema = new mongoose.Schema(
 	{
-		_id: Number,
-		user: { type: String, ref: "user" },
+		_id: { type: Number, required: true },
+		user: { type: String, ref: "user", required: true },
 		card_number: { type: Number, min: 16, max: 16, required: true },
-		exp_year: { type: Number, min: 2, max: 2 },
-		exp_month: { type: Number, min: 2, max: 2 },
-		CVV: { type: Number, min: 3, max: 3 },
+		exp_year: { type: Number, min: 2, max: 2, required: true },
+		exp_month: { type: Number, min: 2, max: 2, required: true },
+		CVV: { type: Number, min: 3, max: 3, required: true },
 	},
 	{ _id: false }
 );
