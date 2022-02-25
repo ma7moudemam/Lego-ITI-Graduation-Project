@@ -8,7 +8,7 @@ mongoose
 	.connect(process.env.DB_URL || 27017)
 	.then(() => {
 		app.listen(process.env.PORT || 8080, () => {
-			console.log("I am Listenining .......");
+			console.log(process.env.NODE_MODE);
 		});
 	})
 	.catch((error) => console.log("ERROR IN DATABASE!!"));
