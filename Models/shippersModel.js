@@ -4,11 +4,10 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const shippersSchema = new Schema({
     _id:Number,
-    name: String,
-    date: String,
+    name:{type :String,required :true},
   
-  contact: [{ email: String,
-     phone_number: Number }]
+  contact: [{ email:{ type:String , required :true},
+     phone_number: {type:Number, required:true }}]
   
    
 
