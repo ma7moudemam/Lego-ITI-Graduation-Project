@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,8 +18,10 @@
   },
   "homepage": "https://github.com/ma7moudemam/Lego-ITI-Graduation-Project#readme",
   "dependencies": {
+    "body-parser": "^1.19.2",
     "express": "^4.17.3",
-    "mongoose": "^6.2.3"
+    "mongoose": "^6.2.3",
+    "mongoose-sequence": "^5.3.1"
   },
   "devDependencies": {
     "morgan": "^1.10.0"
