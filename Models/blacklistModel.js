@@ -1,20 +1,16 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
-const AutoIncrement = require('mongoose-sequence')(mongoose);
+const mongoose = require("mongoose");
+const AutoIncrement = require("mongoose-sequence")(mongoose);
 
-const blacklistSchema = new Schema({
-    _id:Number,
-    user: {type:String,
-        required:true,
-        ref : "user",
-    }
-  },{ _id : false});
+const blacklistSchema = new mongoose.Schema(
+	{
+		_id: Number,
+		user: { type: String, required: true, ref: "user" },
+	},
+	{ _id: false }
+);
 
+blacklistSchema.plugin(AutoIncrement, { id: "blacklist_id_counter", inc_field: "_id" });
 
-  blacklistSchema.plugin(AutoIncrement, {id : 'blacklist_id_counter' , inc_field: '_id'});
-  
-  
-  const blacklist = mongoose.model('blacklist', blacklistSchema);
-  
-  
-  module.exports = blacklist;
+const blacklist = mongoose.model("blacklist", blacklistSchema);
+
+module.exports = blacklist;
