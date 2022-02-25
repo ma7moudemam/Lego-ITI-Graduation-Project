@@ -11,7 +11,7 @@ const productModel = new mongoose.Schema({
     category: { type: Number, ref: "category", required: true },
     review: [{ type: Number, ref: "review" }],
     rating: { type: Number }
-}, { _id: false });
+}, { _id: false })
 
 studentSchema.plugin(productAutoInc, { id: "productAutoIncrement", inc_field: "_id" });
 module.exports = mongoose.model("product", productModel);
