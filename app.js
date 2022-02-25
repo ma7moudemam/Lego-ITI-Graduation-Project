@@ -1,1 +1,1 @@
-// this is Node Projext
+// this is Lego Projext
