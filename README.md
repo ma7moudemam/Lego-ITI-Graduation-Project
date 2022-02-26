@@ -4,13 +4,16 @@
 ``` 
 - /login
 - /register
-- /user
-- /products
+- /account
+- /shop
 - /home
 - /cart
 - /wishlist
 - /dashboard
-- /shippers
+- /shipper
+- /order
+- /account/logout
+- /blacklist
 
 ```
 > ## **Schema**
