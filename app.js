@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const body_parser = require("body-parser");
+const authenticationRouter = require("./Routers/authenticationRouter");
 
 const app = express();
 mongoose
@@ -25,7 +26,7 @@ app.use((request, response, next) => {
 app.use(body_parser.json());
 
 ///////  Router
-
+app.use(authenticationRouter);
 ////////
 
 // Not Found MW
