@@ -1,5 +1,5 @@
 const { validationResult } = require("express-validator");
-model.exports = function errorHandeler(request) {
+model.exports = function (request) {
 	let errors = validationResult(request);
 	let error = new Error();
 	if (!errors.isEmpty()) {
