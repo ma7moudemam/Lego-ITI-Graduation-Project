@@ -23,7 +23,6 @@ const schema = new mongoose.Schema(
 				city: { type: String, required: true },
 				street: { type: String, required: true },
 				building: { type: Number, required: true },
-				postal_code: { type: Number, required: true },
 			},
 		],
 		wishlist: [
