@@ -14,5 +14,5 @@ const productModel = new mongoose.Schema(
 	{ _id: false }
 );
 
-studentSchema.plugin(productAutoInc, { id: "productAutoIncrement", inc_field: "_id" });
+productModel.plugin(productAutoInc, { id: "productAutoIncrement", inc_field: "_id" });
 module.exports = mongoose.model("product", productModel);

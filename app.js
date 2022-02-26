@@ -1,10 +1,31 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const body_parser = require("body-parser");
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+	destination: (request, file, callback) => {
+		callback(null, path.join(__dirname, "images"));
+	},
+	filename: (req, file, callback) => {
+		callback(null, new Date().toLocaleDateString().replace(/\//g, "-") + "-" + file.originalname);
+	},
+});
+const limits = { fileSize: 838861 };
+const fileFilter = (request, file, callback) => {
+	if (file.mimetype == "image/jpeg" || file.mimetype == "image/jpg" || file.mimetype == "image/png")
+		callback(null, true);
+};
+
+
 const authenticationRouter = require("./Routers/authenticationRouter");
 
 const app = express();
+
+const shopRouter = require('./Routers/shopRouter');
 mongoose
 	.connect(process.env.DB_URL || 27017)
 	.then(() => {
@@ -24,9 +45,13 @@ app.use((request, response, next) => {
 });
 
 app.use(body_parser.json());
+// calling multer and giving static path for images
+app.use("/images", express.static(path.join(__dirname, "images")));
+app.use(multer({ storage, limits, fileFilter }).single("image"));
 
 ///////  Router
 app.use(authenticationRouter);
+app.use(shopRouter)
 ////////
 
 // Not Found MW
