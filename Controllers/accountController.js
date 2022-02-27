@@ -1,14 +1,15 @@
 const errorHandeler = require("./errorHandeler.js");
 const UserModel = require("./../Models/userModel");
-const { response } = require("express");
+const bcrypt = require("bcrypt");
 // const jwt = require('jsonwebtoken')
 
 // Just for testing
 exports.postUser = (req, res, next) => {
 	errorHandeler(req);
+	let hashedPassword = bcrypt.hashSync(req.body.password, 15);
 	let object = new UserModel({
 		email: req.body.email,
-		password: req.body.password,
+		password: hashedPassword,
 		age: req.body.age,
 		address: {
 			country: req.body.country,
