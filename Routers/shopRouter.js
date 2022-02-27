@@ -20,4 +20,5 @@ router
 router.route("/product")
     .get( [], controller.getProduct)
 
+
 module.exports=router;

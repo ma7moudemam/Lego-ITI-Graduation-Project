@@ -5,11 +5,12 @@ const productModel = new mongoose.Schema(
 	{
 		_id: Number,
 		name: { type: String, required: true },
-		// images: [{ type: String, required: true }],
+		images: [{ type: String, required: true }],
 		price: { type: Number, required: true },
 		amount: { type: Number, required: true },
 		sold: { type: Number, required: true },
 		rating: { type: Number },
+		category: { type: Number, ref: "category" },
 	},
 	{ _id: false }
 );

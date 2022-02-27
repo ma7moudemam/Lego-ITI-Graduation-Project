@@ -7,5 +7,5 @@ const categoryModel = new mongoose.Schema({
     products: [{ type: Number, ref: "product" }],
 })
 
-studentSchema.plugin(categoryAutoInc, { id: "categoryAutoIncrement", inc_field: "_id" });
+categoryModel.plugin(categoryAutoInc, { id: "categoryAutoIncrement", inc_field: "_id" });
 module.exports = mongoose.model("category", categoryModel)

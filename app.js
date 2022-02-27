@@ -27,7 +27,9 @@ const accountRouter = require('./Routers/accountRouter')
 
 const app = express();
 
-const shopRouter = require("./Routers/shopRouter");
+const shopRouter = require('./Routers/shopRouter');
+const cartRouter = require('./Routers/cartRouter');
+
 mongoose
 	.connect(process.env.DB_URL)
 	.then(() => {
@@ -49,13 +51,14 @@ app.use((request, response, next) => {
 app.use(body_parser.json());
 // calling multer and giving static path for images
 app.use("/images", express.static(path.join(__dirname, "images")));
-app.use(multer({ storage, limits, fileFilter }).single("image"));
+app.use(multer({ storage, limits, fileFilter }).array("image"));
 
 ///////  Router
 app.use(authenticationRouter);
 app.use('/account', accountRouter)
 app.use('/home', homeRouter)
 app.use(shopRouter);
+app.use(cartRouter)
 ////////
 
 // Not Found MW
