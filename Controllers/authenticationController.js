@@ -31,7 +31,7 @@ exports.register = (request, response, next) => {
 	userModel
 		.findOne({ email: request.body.email })
 		.then((data) => {
-			if (data == null) response.redirect(307, "user");
+			if (data == null) response.redirect(307, "account");
 			else {
 				request.body.message = "You are Already a User";
 				response.redirect(307, "login");
