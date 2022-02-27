@@ -15,17 +15,21 @@ exports.getCart = (req, res, next) => {
     
     Cart.findOne({user: req.user.id}).populate('product').then(carts => {
 
-        //  let products = [];   
-        // carts.product.forEach(element => {
-        //     let newCart = {...element, quantity: carts.product.filter(p => p._id == element._id).length};
-        //     // element["quantity"] = carts.product.filter(p => p._id == element._id).length;
-        //     console.log(carts.product.filter(p => p._id == element._id).length)
-        //     if(!products.includes(newCart._id)) 
-        //         products.push(newCart)
-        // });
+         let products = [];   
+        carts.product.forEach(element => {
+            console.log(element)
+            let newPoduct = { 
+                _id: element._id,
+                name: element.name,
+                price: element.price,
+                images: element.images,
+                quantity: carts.product.filter(p => p._id == element._id).length
+            };
+            if(!products.includes(newPoduct._id)) 
+                products.push(newPoduct)
+        });
 
-        // console.log(products);
-        res.status(200).send(carts)
+        res.status(200).send({total_price: carts.total_price, products})
     }).catch(err => console.log(err))
 }
 
