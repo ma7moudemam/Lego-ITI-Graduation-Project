@@ -3,9 +3,7 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const body_parser = require("body-parser");
-<<<<<<< HEAD
 // Routes
-=======
 const multer = require("multer");
 const path = require("path");
 
@@ -23,7 +21,6 @@ const fileFilter = (request, file, callback) => {
 		callback(null, true);
 };
 
->>>>>>> 9eb6275fe3ee5520c71ed0d88a3da0ad79857477
 const authenticationRouter = require("./Routers/authenticationRouter");
 const homeRouter = require('./Routers/homeRouter')
 const accountRouter = require('./Routers/accountRouter')
@@ -56,12 +53,9 @@ app.use(multer({ storage, limits, fileFilter }).single("image"));
 
 ///////  Router
 app.use(authenticationRouter);
-<<<<<<< HEAD
 app.use('/account', accountRouter)
 app.use('/home', homeRouter)
-=======
 app.use(shopRouter);
->>>>>>> 9eb6275fe3ee5520c71ed0d88a3da0ad79857477
 ////////
 
 // Not Found MW

@@ -1,6 +1,6 @@
 const errorHandeler = require("./errorHandeler.js")
 const UserModel = require('./../Models/userModel')
-const jwt = require('jsonwebtoken')
+// const jwt = require('jsonwebtoken')
 
 // Just for testing
 exports.postUser = (req, res, next) => {
@@ -13,25 +13,25 @@ exports.postUser = (req, res, next) => {
 }
 
 // To generate token
-exports.userLogin = (req, res, next) => {
-    errorHandeler(req)
+// exports.userLogin = (req, res, next) => {
+//     errorHandeler(req)
 
-    const user = new UserModel(req.body)
-    let token = jwt.sign(
-					{
-						email: req.body.email,
-					},
-					process.env.SECRET_KEY,
-					{ expiresIn: "25h" }
-                );
+//     const user = new UserModel(req.body)
+//     let token = jwt.sign(
+// 					{
+// 						email: req.body.email,
+// 					},
+// 					process.env.SECRET_KEY,
+// 					{ expiresIn: "25h" }
+//                 );
     
-    user.save().then((data) => {
-        console.log(token)
-        res.status(200).send({data , token})
-    }).catch((e) => {
-        res.status(500).send(e)
-    })
-}
+//     user.save().then((data) => {
+//         console.log(token)
+//         res.status(200).send({data , token})
+//     }).catch((e) => {
+//         res.status(500).send(e)
+//     })
+// }
 
 // Get Users => Admin
 exports.getAllUsers = (req, res, next) => {
