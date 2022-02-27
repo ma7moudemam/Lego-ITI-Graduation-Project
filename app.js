@@ -20,14 +20,13 @@ const fileFilter = (request, file, callback) => {
 		callback(null, true);
 };
 
-
 const authenticationRouter = require("./Routers/authenticationRouter");
 
 const app = express();
 
-const shopRouter = require('./Routers/shopRouter');
+const shopRouter = require("./Routers/shopRouter");
 mongoose
-	.connect(process.env.DB_URL || 27017)
+	.connect(process.env.DB_URL)
 	.then(() => {
 		app.listen(process.env.PORT || 8080, () => {
 			console.log(process.env.NODE_MODE);
@@ -51,7 +50,7 @@ app.use(multer({ storage, limits, fileFilter }).single("image"));
 
 ///////  Router
 app.use(authenticationRouter);
-app.use(shopRouter)
+app.use(shopRouter);
 ////////
 
 // Not Found MW
