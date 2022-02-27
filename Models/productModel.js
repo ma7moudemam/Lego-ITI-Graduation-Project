@@ -14,6 +14,7 @@ const productModel = new mongoose.Schema(
 	{ _id: false }
 );
 
+<<<<<<< HEAD
 // function to fetch random product
 productModel.statics.random = async function () {
 	let randomDocArr = []
@@ -25,5 +26,7 @@ productModel.statics.random = async function () {
 };
 
 
+=======
+>>>>>>> 9eb6275fe3ee5520c71ed0d88a3da0ad79857477
 productModel.plugin(productAutoInc, { id: "productAutoIncrement", inc_field: "_id" });
 module.exports = mongoose.model("product", productModel);
