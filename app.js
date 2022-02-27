@@ -1,8 +1,12 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const body_parser = require("body-parser");
+// Routes
 const authenticationRouter = require("./Routers/authenticationRouter");
+const homeRouter = require('./Routers/homeRouter')
+const accountRouter = require('./Routers/accountRouter')
 
 const app = express();
 mongoose
@@ -27,6 +31,8 @@ app.use(body_parser.json());
 
 ///////  Router
 app.use(authenticationRouter);
+app.use('/account', accountRouter)
+app.use('/home', homeRouter)
 ////////
 
 // Not Found MW
@@ -34,7 +40,7 @@ app.use((request, response, next) => {
 	response.status(404).json({ data: "Not Found" });
 });
 
-// Error MW
+// // Error MW
 app.use((error, request, response, next) => {
 	let status = error.status || 500;
 	response.status(status).json({ Error: error + "" });
