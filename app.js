@@ -24,7 +24,8 @@ const fileFilter = (request, file, callback) => {
 const authenticationRouter = require("./Routers/authenticationRouter");
 const homeRouter = require('./Routers/homeRouter')
 const accountRouter = require('./Routers/accountRouter')
-
+const dashboardRouter = require("./Routers/dashboardRoute");
+const wishlistRouter = require("./Routers/wishListRoute");
 const app = express();
 
 const shopRouter = require('./Routers/shopRouter');
@@ -59,6 +60,8 @@ app.use('/account', accountRouter)
 app.use('/home', homeRouter)
 app.use(shopRouter);
 app.use(cartRouter)
+app.use(dashboardRouter);
+app.use(wishlistRouter);
 ////////
 
 // Not Found MW

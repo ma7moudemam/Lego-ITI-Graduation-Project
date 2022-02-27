@@ -17,7 +17,8 @@
 .env.development.local
 .env.test.local
 .env.production.local
-
+.env.Admin_Email
+.env.Admin_Password
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
