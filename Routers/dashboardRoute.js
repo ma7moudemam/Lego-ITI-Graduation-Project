@@ -4,57 +4,58 @@ const dashboardRouter = express.Router();
 //controller
 const controller = require("./../Controllers/dashboardController");
 //auth MW
+const isAuth = require("./../middelWare/auth");
 
-dashboardRouter.get("/dashboard", controller.statistics);
+dashboardRouter.get("/dashboard", isAuth, controller.statistics);
 
 // products
 dashboardRouter.route("/dashboard/products")
-    .get(controller.getAllProducts)
-    .post([
+    .get(isAuth, controller.getAllProducts)
+    .post(isAuth, [
         body("productName").isString().withMessage("ProductName must be text"),
         body("price").isInt().withMessage("price is mandatory and must be a number"),
         body("amount").isInt().withMessage("amount is mandatory and must be a number"),
         body("sold").isInt().withMessage("amount is mandatory and must be a number"),
         body("rating").isInt().withMessage("rating is not valid")
     ], controller.addProduct)
-    .put(controller.updateProduct)
-    .delete(controller.deleteProduct);
+    .put(isAuth, controller.updateProduct)
+    .delete(isAuth, controller.deleteProduct);
 // users
 dashboardRouter.route("/dashboard/users")
-    .get(controller.getAllUsers);
+    .get(isAuth, controller.getAllUsers);
 //orders
 dashboardRouter.route("/dashboard/orders")
-    .get(controller.getAllOrders)
+    .get(isAuth, controller.getAllOrders)
 //reviews
 dashboardRouter.route("/dashboard/reviews")
-    .get(controller.getAllReviews)
-    .delete(controller.deleteReview);
+    .get(isAuth, controller.getAllReviews)
+    .delete(isAuth, controller.deleteReview);
 
 dashboardRouter.route("/dashboard/stock")
-    .get(controller.getStock)
-    .post([
+    .get(isAuth, controller.getStock)
+    .post(isAuth, [
         body("product").isInt().withMessage("product is intger")
     ], controller.addToStock)
-    .put(controller.updateStock)
-    .delete(controller.deleteStock);
+    .put(isAuth, controller.updateStock)
+    .delete(isAuth, controller.deleteStock);
 
 dashboardRouter.route("/dashboard/category")
-    .get(controller.getAllCategories)
-    .post([
+    .get(isAuth, controller.getAllCategories)
+    .post(isAuth, [
         body("categoryName").isString().withMessage("category name must be a text"),
         body("products").isInt().withMessage("products is integer")
     ], controller.addNewCategory)
-    .put(controller.updateCategory)
-    .delete(controller.deleteCategory);
+    .put(isAuth, controller.updateCategory)
+    .delete(isAuth, controller.deleteCategory);
 
 dashboardRouter.route("/dashboard/shipper")
-    .get(controller.getAllShippers)
-    .post([
+    .get(isAuth, controller.getAllShippers)
+    .post(isAuth, [
         body("shipperName").isString().withMessage("shippername must be text"),
         body("contact.email").isEmail().withMessage("you should enter valid email"),
         body("contact.phoneNumber").isInt().withMessage("phone number is not valid")
     ], controller.addNewShipper)
-    .put(controller.updateShipper)
-    .delete(controller.deleteShipper);
+    .put(isAuth, controller.updateShipper)
+    .delete(isAuth, controller.deleteShipper);
 
 module.exports = dashboardRouter;

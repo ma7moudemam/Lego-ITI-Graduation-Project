@@ -1,24 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../Controllers/cartController");
-
+const isAuth = require("./../middelWare/auth");
 const { body, query, param } = require("express-validator")
 
 router
     .route("/cart")
 
-    .get( [], controller.getCart)
+    .get( isAuth, controller.getCart)
 
-    .post([], controller.createCart)
+    .post(isAuth, controller.createCart)
 
-
-    .delete( [], controller.deleteFromCart)
-
+    .delete( isAuth, controller.deleteFromCart)
 
 router.route("/cart/AddToCart")
-    .put( [], controller.addToCart)
+    .put( isAuth, controller.addToCart)
+
 router.route("/cart/UpdateCart")
-    .put( [], controller.updateCart)
+    .put( isAuth, controller.updateCart)
 
 module.exports=router;
 
