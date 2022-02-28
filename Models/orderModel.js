@@ -6,11 +6,11 @@ const schema = new mongoose.Schema(
 	{
 		_id: Number,
 		user: { type: String, ref: "user" },
-		shippers: { type: Number, ref: "shippers" },
+		shipper: { type: Number, ref: "shippers" },
 		order_status: Number,
 		tax: Number,
 		payment: { type: Number, ref: "payment" },
-		order_date: Date,
+		order_date: String,
 		product: [
 			{
 				product: { type: Number, ref: "product" },
@@ -22,8 +22,8 @@ const schema = new mongoose.Schema(
 	{ _id: false }
 );
 
-schema.plugin(AutoIncrement, { id: "eventAutoIncrement", inc_field: "_id" });
+schema.plugin(AutoIncrement, { id: "orderAutoIncrement", inc_field: "_id" });
 
 // 2 - register for schema in mongoose
 
-module.exports = mongoose.model("Orders", schema);
+module.exports = mongoose.model("orders", schema);

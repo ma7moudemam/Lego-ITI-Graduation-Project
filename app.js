@@ -22,15 +22,15 @@ const fileFilter = (request, file, callback) => {
 };
 
 const authenticationRouter = require("./Routers/authenticationRouter");
-const homeRouter = require('./Routers/homeRouter')
-const accountRouter = require('./Routers/accountRouter')
+const homeRouter = require("./Routers/homeRouter");
+const accountRouter = require("./Routers/accountRouter");
 const dashboardRouter = require("./Routers/dashboardRoute");
 const wishlistRouter = require("./Routers/wishListRoute");
+const orderRouter = require("./Routers/orderRouter");
+const shopRouter = require("./Routers/shopRouter");
+const cartRouter = require("./Routers/cartRouter");
+
 const app = express();
-
-const shopRouter = require('./Routers/shopRouter');
-const cartRouter = require('./Routers/cartRouter');
-
 mongoose
 	.connect(process.env.DB_URL)
 	.then(() => {
@@ -56,10 +56,11 @@ app.use(multer({ storage, limits, fileFilter }).array("image"));
 
 ///////  Router
 app.use(authenticationRouter);
-app.use('/account', accountRouter)
-app.use('/home', homeRouter)
+app.use("/account", accountRouter);
+app.use("/home", homeRouter);
+app.use(orderRouter);
 app.use(shopRouter);
-app.use(cartRouter)
+app.use(cartRouter);
 app.use(dashboardRouter);
 app.use(wishlistRouter);
 ////////
