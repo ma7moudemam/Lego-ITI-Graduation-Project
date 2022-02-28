@@ -3,10 +3,11 @@ const wishListRouter = express.Router();
 //controller
 const controller = require("./../Controllers/wishlistController");
 //auth MW
+const isAuth = require("./../middelWare/auth");
 
 wishListRouter.route("/wishlist")
-    .get(controller.getWishlist)
-    .put(controller.updateWishlist)
-    .delete(controller.deleteFromWishlist);
+    .get(isAuth, controller.getWishlist)
+    .put(isAuth, controller.updateWishlist)
+    .delete(isAuth, controller.deleteFromWishlist);
 
 module.exports = wishListRouter;
