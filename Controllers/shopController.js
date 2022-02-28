@@ -24,39 +24,48 @@ exports.getProduct = (req, res) => {
 }
 
 exports.addProduct = (req, res, next) => {
-
     errorHandeler(req);
-    let images = [];
-    req.files.forEach(image => images.push(image.filename));
 
-    let product = new Product({
-        name: req.body.name,
-        sold: req.body.sold,
-        amount: req.body.amount,
-        price:req.body.price,
-        // rating: request.body.rating,
-        images: [...images], 
-        category: req.body.categoryId
-    }) 
-    product.save().then(product => res.status(201).json(product))
+    if ( req.role == "admin" ){
+        let images = [];
+        req.files.forEach(image => images.push(image.filename));
+
+        let product = new Product({
+            name: req.body.name,
+            sold: req.body.sold,
+            amount: req.body.amount,
+            price:req.body.price,
+            // rating: request.body.rating,
+            images: [...images], 
+            category: req.body.categoryId
+        }) 
+        product.save().then(product => res.status(201).json(product))
+    }else {
+        throw new Error("Not Authorized.");
+    }
 }
 exports.updateProduct = (req, res) => {
-
     errorHandeler(req);
-    Product.findByIdAndUpdate(req.body.id,{
-            $set:{
-                name: req.body.name,
-                sold: req.body.sold,
-                amount: req.body.amount,
-                price:req.body.price,
-            },
-            $push: { images : req.file.filename }  
-        })
-    .then(product => res.status(201).json(product))
+
+    if ( req.role == "admin" ){
+        Product.findByIdAndUpdate(req.body.id,{
+                $set:{
+                    name: req.body.name,
+                    sold: req.body.sold,
+                    amount: req.body.amount,
+                    price:req.body.price,
+                },
+                $push: { images : req.file.filename }  
+            })
+        .then(product => res.status(201).json(product))
+    }else {
+        throw new Error("Not Authorized.");
+    }
 }
 exports.deleteProduct = (req, res, next) => {
-
     errorHandeler(req);
+
+    if ( req.role == "admin" ){
     Product.findByIdAndDelete(req.body.id)
     
             .then(data=>{
@@ -68,6 +77,9 @@ exports.deleteProduct = (req, res, next) => {
                 res.status(200).json({message:"deleted"})
             })
             .catch(error=>next(error))
+        }else {
+            throw new Error("Not Authorized.");
+       }
     // product.save().then(product => res.status(201).json(product))
     // res.status(200).json({ data: "delete product" })
 }
