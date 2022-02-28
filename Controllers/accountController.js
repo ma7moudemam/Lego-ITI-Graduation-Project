@@ -1,13 +1,13 @@
 const errorHandeler = require("./errorHandeler.js");
 const UserModel = require("./../Models/userModel");
 const bcrypt = require("bcrypt");
-// const jwt = require('jsonwebtoken')
 
-// Just for testing
 exports.postUser = (req, res, next) => {
 	errorHandeler(req);
-	let hashedPassword = bcrypt.hashSync(req.body.password, 15);
-	let object = new UserModel({
+
+	if (req.role == "user") {
+		let hashedPassword = bcrypt.hashSync(req.body.password, 15);
+		let object = new UserModel({
 		email: req.body.email,
 		password: hashedPassword,
 		age: req.body.age,
@@ -23,47 +23,43 @@ exports.postUser = (req, res, next) => {
 		.save()
 		.then((data) => res.status(200).json({ data }))
 		.catch((error) => next(error));
+	}else {
+        throw new Error("Not Authorized.");
+    }
+
 };
-
-// To generate token
-// exports.userLogin = (req, res, next) => {
-//     errorHandeler(req)
-
-//     const user = new UserModel(req.body)
-//     let token = jwt.sign(
-// 					{
-// 						email: req.body.email,
-// 					},
-// 					process.env.SECRET_KEY,
-// 					{ expiresIn: "25h" }
-//                 );
-
-//     user.save().then((data) => {
-//         console.log(token)
-//         res.status(200).send({data , token})
-//     }).catch((e) => {
-//         res.status(500).send(e)
-//     })
-// }
 
 // Get Users => Admin
 exports.getAllUsers = (req, res, next) => {
 	errorHandeler(req);
-	console.log("All users");
 
-	UserModel.find({})
+	if (req.role == "admin") { 
+		UserModel.find({})
 		.then((users) => {
 			res.status(200).send(users);
 		})
 		.catch((e) => {
 			res.status(500).send(e);
 		});
+	} else {
+		 throw new Error("Not Authorized.");
+	}
+	
 };
+// if (req.role = "user"){
+		
+// 	}else {
+// 		 throw new Error("Not Authorized.");
+// 	}
 
 // Get User-Profile
 exports.getProfile = (req, res, next) => {
 	errorHandeler(req);
-	res.status(200).send(req.user);
+	if (req.role == "user"){
+		res.status(200).send(req.user);
+	} else {
+		 throw new Error("Not Authorized.");
+	}
 };
 
 // Update User-Profile
@@ -78,7 +74,8 @@ exports.updateProfile = (req, res, next) => {
 		return res.status(400).send("error: Invalid updates!");
 	}
 
-	UserModel.findById(req.user._id)
+	if (req.role == "user"){
+		UserModel.findById(req.user._id)
 		.then((user) => {
 			if (!user) {
 				throw new Error("User Not Found");
@@ -97,13 +94,18 @@ exports.updateProfile = (req, res, next) => {
 		.catch((e) => {
 			res.status(500).send(e);
 		});
+	}else {
+		 throw new Error("Not Authorized.");
+	}
+	
 };
 
 // Delete User-Profile
 exports.deleteProfile = (req, res, next) => {
 	errorHandeler(req);
 
-	UserModel.findByIdAndDelete(req.user._id)
+	if (req.role == "user" || req.role == "admin" ){
+		UserModel.findByIdAndDelete(req.user._id)
 		.then((user) => {
 			if (!user) {
 				return res.status(404).send();
@@ -113,4 +115,7 @@ exports.deleteProfile = (req, res, next) => {
 		.catch((e) => {
 			res.status(500).send(e);
 		});
+	}else {
+		 throw new Error("Not Authorized.");
+	}
 };

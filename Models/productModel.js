@@ -15,13 +15,17 @@ const productModel = new mongoose.Schema(
 	{ _id: false }
 );
 
-// function to fetch random product
+// function to fetch random products
 productModel.statics.random = async function () {
 	let randomDocArr = []
+	let i = 0;
 	const count = await this.count();
 	const rand = Math.floor(Math.random() * count);
 	const randomDoc = await this.findOne().skip(rand);
-	randomDocArr.push(randomDoc)
+	while (i <= 6) {
+		randomDocArr.push(randomDoc)
+		i++;
+	}
 	return randomDocArr;
 };
 
