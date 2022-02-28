@@ -1,6 +1,7 @@
 const errorHandeler = require("./errorHandeler.js");
 const bcrypt = require("bcrypt");
 const userModel = require("./../Models/userModel.js");
+const shipperModel = require("./../Models/shippersModel");
 const JWT = require("jsonwebtoken");
 
 exports.login = (request, response, next) => {
@@ -9,7 +10,11 @@ exports.login = (request, response, next) => {
 		.findOne({ email: request.body.email })
 		.then((data) => {
 			if (data == null) {
-				throw new Error("You are Not in our system Please Register");
+				shipperModel.findOne({ email: request.body.email }).then((data) => {
+					if (data == null) {
+						throw new Error("You are not in the system Go Out");
+					}
+				});
 			}
 			if (bcrypt.compareSync(request.body.password, data.password)) {
 				let token = JWT.sign(
