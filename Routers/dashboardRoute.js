@@ -21,8 +21,8 @@ dashboardRouter.route("/dashboard/products")
     .put(isAuth, controller.updateProduct)
     .delete(isAuth, controller.deleteProduct);
 // users
-dashboardRouter.route("/dashboard/users")
-    .get(isAuth, controller.getAllUsers);
+// dashboardRouter.route("/dashboard/users")
+//     .get(isAuth, controller.getAllUsers);
 //orders
 dashboardRouter.route("/dashboard/orders")
     .get(isAuth, controller.getAllOrders)

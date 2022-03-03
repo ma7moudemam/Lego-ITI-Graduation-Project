@@ -29,6 +29,7 @@ const wishlistRouter = require("./Routers/wishListRoute");
 const orderRouter = require("./Routers/orderRouter");
 const shopRouter = require("./Routers/shopRouter");
 const cartRouter = require("./Routers/cartRouter");
+const blacklistRouter = require('./Routers/blacklistRouter')
 
 const app = express();
 mongoose
@@ -54,6 +55,7 @@ app.use(body_parser.json());
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(multer({ storage, limits, fileFilter }).array("image"));
 
+
 ///////  Router
 app.use(authenticationRouter);
 app.use("/account", accountRouter);
@@ -63,6 +65,7 @@ app.use(shopRouter);
 app.use(cartRouter);
 app.use(dashboardRouter);
 app.use(wishlistRouter);
+app.use(blacklistRouter)
 ////////
 
 // Not Found MW
