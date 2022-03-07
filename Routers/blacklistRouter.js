@@ -3,8 +3,6 @@ const router = express.Router();
 const blacklistController = require('./../Controllers/blacklistcontroller');
 const auth = require('./../middelWare/auth')
 
-// router.get('/test', blacklistController.blackfun);
-
 router.get('/', blacklistController.getBlockUsers)
 router.post('/',auth, blacklistController.addBlockUsers)
 router.delete('/',auth, blacklistController.deleteBlockUsers)
