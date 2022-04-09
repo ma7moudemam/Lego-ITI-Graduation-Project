@@ -67,23 +67,23 @@ exports.getProduct = (req, res) => {
 exports.addProduct = (req, res, next) => {
     errorHandeler(req);
 
-    if ( req.role == "admin" ){
+    // if ( req.role == "admin" ){
         let images = [];
         req.files.forEach(image => images.push(image.filename));
-
+        console.log("=====>",req)
         let product = new Product({
             name: req.body.name,
             sold: req.body.sold,
             amount: req.body.amount,
             price:req.body.price,
-            rating: request.body.rating || 1,
+            rating: req.body.rating || 1,
             images: [...images], 
             category: req.body.categoryId
         }) 
         product.save().then(product => res.status(201).json(product))
-    }else {
-        throw new Error("Not Authorized.");
-    }
+    // }else {
+    //     throw new Error("Not Authorized.");
+    // }
 }
 exports.updateProduct = (req, res) => {
     errorHandeler(req);

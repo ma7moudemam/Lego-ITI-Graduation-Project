@@ -9,7 +9,7 @@ router
 
     .get( [], controller.getAllProducts)
 
-    .post(isAuth, controller.addProduct)
+    .post(controller.addProduct)
 
     .delete( isAuth, controller.deleteProduct)
 

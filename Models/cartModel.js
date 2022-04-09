@@ -5,8 +5,14 @@ const schema = new mongoose.Schema(
 	{
 		_id: Number,
 		total_price: { type: Number, required: true },
-		product: [{ type: Number, ref: "product" }],
-		user: { type: String, ref: "user" },
+		product: [
+			{
+				product: { type: Number, ref: "product" },
+				quantity: Number,
+			},
+		],
+		user: { type: Number, ref: "user" },
+		totalItemsCount:Number
 	},
 	{ _id: false }
 );

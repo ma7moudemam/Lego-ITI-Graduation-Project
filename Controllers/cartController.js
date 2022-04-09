@@ -12,22 +12,23 @@ exports.createCart = (req, res, next) => {
 };
 exports.getCart = (req, res, next) => {
 
-    Cart.findOne({ user: req.user.id })
-        .populate("product")
+    Cart.findOne({ user: 1 })
+        .populate("product.product")
         .then((carts) => {
-            let products = [];
-            carts.product.forEach((element) => {
-                console.log(element);
-                let newPoduct = {
-                    _id: element._id,
-                    name: element.name,
-                    price: element.price,
-                    images: element.images,
-                    quantity: carts.product.filter((p) => p._id == element._id).length,
-                };
-                if (!products.includes(newPoduct._id)) products.push(newPoduct);
-            });
-            res.status(200).send({ total_price: carts.total_price, products });
+            
+          
+            if(!carts) {
+              
+                let cart = new Cart({
+                    total_price: 0,
+                    product: [],
+                    totalItemsCount: 0,
+                    // user: req.user.id,
+                    user: 1
+                });
+                cart.save().then((cart) => res.status(201).json(cart));
+             }
+            res.status(200).send({ total_price: carts.total_price, carts });
         })
         .catch((err) => console.log(err));
 };
@@ -50,13 +51,14 @@ exports.addToCart = (req, res, next) => {
 
 exports.updateCart = (req, res, next) => {
 	errorHandeler(req);
-
+      console.log(req.body);
         Cart.updateOne(
-            { user: req.user.id },
+            { user: 1 },
             {
                 $set: {
-                    total_price: req.body.total_price,
-                    product: req.body.productId,
+                    total_price: req.body.totalPrice || 0,
+                     product: Object.values(req.body.products).map(prod=>{return{product:prod._id,quantity:prod.quantity}}),
+                     totalItemsCount:req.body.totalItemsCount
                     // user: req.user.id
                 },
             }
