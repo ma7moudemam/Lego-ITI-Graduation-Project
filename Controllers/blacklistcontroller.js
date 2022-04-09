@@ -7,7 +7,7 @@ const CronJob = require('cron').CronJob;
 
 const blackUserList = new CronJob(
     '* 23 * * * *',
-    function() {
+    async function() {
         let blockUserCount=0;
         let blockUsers =[]
         const users = await UserModel.find({});

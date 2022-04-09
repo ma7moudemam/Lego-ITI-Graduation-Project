@@ -18,5 +18,6 @@ router
 router.route("/product")
     .get( [], controller.getProduct)
 
+router.route("/rating").put(controller.updateProductRating)
 
 module.exports=router;

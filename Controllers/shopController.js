@@ -5,11 +5,29 @@ const fs = require("fs");
 const path = require("path");
 const errorHandeler = require("./errorHandeler");
 
-exports.getAllProducts = (req, res, next) => {
+exports.getAllProducts = async (req, res, next) => {
    
-    Product.find({}).populate('category').then(products => {
-        res.status(200).send(products)
-    }).catch(err => console.log(err))
+    let page = req.query.page || 1;
+    let limit = req.query.limit || 5;
+
+    let query = {};
+    let filter = JSON.parse(req.query.filter);
+    let priceRange = filter?.priceRange?.map(range=>{return {price: {$gte :  range.split('-')[0], $lte : range.split('-')[1]}}})
+    if(priceRange?.length >0) {
+         query = {$or: priceRange} 
+    } 
+
+    Product.find(query)
+        .limit(limit)
+        .skip( (page* limit)- limit)
+        .populate('category')
+    .then(products => {
+        Product.find(query).then((data) => {
+            
+            res.status(200).send({products:products, count: data.length})
+        });
+    })
+    .catch(err => console.log(err))
 }
 
 exports.getProduct = (req, res) => {
@@ -35,7 +53,7 @@ exports.addProduct = (req, res, next) => {
             sold: req.body.sold,
             amount: req.body.amount,
             price:req.body.price,
-            // rating: request.body.rating,
+            rating: request.body.rating || 1,
             images: [...images], 
             category: req.body.categoryId
         }) 
@@ -62,6 +80,18 @@ exports.updateProduct = (req, res) => {
         throw new Error("Not Authorized.");
     }
 }
+exports.updateProductRating = (req, res) => {
+    errorHandeler(req);
+    console.log(req.body, )
+        Product.findByIdAndUpdate(req.body._id,{
+                $set:{
+                    ...req.body,
+                    rating: req.body.rating
+                } 
+            })
+        .then(product => res.status(201).json(product))
+}
+
 exports.deleteProduct = (req, res, next) => {
     errorHandeler(req);
 
