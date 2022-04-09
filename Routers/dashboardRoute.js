@@ -40,7 +40,7 @@ dashboardRouter.route("/dashboard/stock")
     .delete(isAuth, controller.deleteStock);
 
 dashboardRouter.route("/dashboard/category")
-    .get(isAuth, controller.getAllCategories)
+    .get(controller.getAllCategories)
     .post(isAuth, [
         body("categoryName").isString().withMessage("category name must be a text"),
         body("products").isInt().withMessage("products is integer")

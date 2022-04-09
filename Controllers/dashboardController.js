@@ -206,14 +206,14 @@ exports.deleteStock = (req, res, next) => {
 /************** category *********** */
 
 exports.getAllCategories = (req, res, next) => {
-    if (req.role === "admin") {
+    // if (req.role === "admin") {
 
         Category.find({})
             .then(data => {
                 if (data == null) throw new Error("something went wrong while getting category")
                 res.status(200).json({ data: "your category is here", body: data })
             }).catch(err => next(err))
-    }
+    // }
 }
 exports.addNewCategory = (req, res, next) => {
     errHandler(req);
