@@ -6,10 +6,13 @@ const JWT = require("jsonwebtoken");
 
 exports.login = (request, response, next) => {
 	errorHandeler(request);
-	if (request.body.email == process.env.ADMIN_EMAIL && request.body.password == process.env.ADMIN_PASSWORD) {
+	if (
+		request.body.signup_email == process.env.ADMIN_EMAIL &&
+		request.body.signup_password == process.env.ADMIN_PASSWORD
+	) {
 		let token = JWT.sign(
 			{
-				email: request.body.email,
+				email: request.body.signup_email,
 				role: "admin",
 			},
 			process.env.SECRET_KEY,
@@ -18,19 +21,19 @@ exports.login = (request, response, next) => {
 		response.status(200).json({ message: "welcome admin", token });
 	} else {
 		userModel
-			.findOne({ email: request.body.email })
+			.findOne({ email: request.body.signup_email })
 			.then((data) => {
 				if (data == null) {
 					shipperModel
-						.findOne({ email: request.body.email })
+						.findOne({ email: request.body.signup_email })
 						.then((data) => {
 							if (data == null) {
 								throw new Error("You are not in the system Go Out");
 							}
-							if (bcrypt.compareSync(request.body.password, data.password)) {
+							if (bcrypt.compareSync(request.body.signup_password, data.password)) {
 								let token = JWT.sign(
 									{
-										email: request.body.email,
+										email: request.body.signup_email,
 										role: "shipper",
 									},
 									process.env.SECRET_KEY,
@@ -43,10 +46,10 @@ exports.login = (request, response, next) => {
 						})
 						.catch((error) => next(error));
 				}
-				if (bcrypt.compareSync(request.body.password, data.password)) {
+				if (bcrypt.compareSync(request.body.signup_password, data.password)) {
 					let token = JWT.sign(
 						{
-							email: request.body.email,
+							email: request.body.signup_email,
 							role: "user",
 						},
 						process.env.SECRET_KEY,
@@ -62,12 +65,11 @@ exports.login = (request, response, next) => {
 exports.register = (request, response, next) => {
 	errorHandeler(request);
 	userModel
-		.findOne({ email: request.body.email })
+		.findOne({ email: request.body.signup_email })
 		.then((data) => {
 			if (data == null) response.redirect(307, "account");
 			else {
-				request.body.message = "You are Already a User";
-				response.redirect(307, "login");
+				throw new Error("You are Already a User");
 			}
 		})
 		.catch((error) => next(error));

@@ -3,16 +3,25 @@ const UserModel = require("./../Models/userModel");
 const bcrypt = require("bcrypt");
 
 exports.postUser = (req, res, next) => {
+	console.log("in");
 	errorHandeler(req);
-
-	if (req.role == "user") {
-		let hashedPassword = bcrypt.hashSync(req.body.password, 15);
-		let object = new UserModel({
-		email: req.body.email,
+	let hashedPassword = bcrypt.hashSync(req.body.signup_password, 15);
+	function getAge() {
+		var today = new Date();
+		var birthDate = new Date(`${req.body.year}/${req.body.month}/${req.body.day}`);
+		var age = today.getFullYear() - birthDate.getFullYear();
+		var m = today.getMonth() - birthDate.getMonth();
+		if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+			age--;
+		}
+		return age;
+	}
+	let object = new UserModel({
+		email: req.body.signup_email,
 		password: hashedPassword,
-		age: req.body.age,
+		age: getAge(),
+		country: req.body.country,
 		address: {
-			country: req.body.country,
 			city: req.body.city,
 			street: req.body.street,
 			building: req.body.building,
@@ -23,31 +32,26 @@ exports.postUser = (req, res, next) => {
 		.save()
 		.then((data) => res.status(200).json({ data }))
 		.catch((error) => next(error));
-	}else {
-        throw new Error("Not Authorized.");
-    }
-
 };
 
 // Get Users => Admin
 exports.getAllUsers = (req, res, next) => {
 	errorHandeler(req);
 
-	if (req.role == "admin") { 
+	if (req.role == "admin") {
 		UserModel.find({})
-		.then((users) => {
-			res.status(200).send(users);
-		})
-		.catch((e) => {
-			res.status(500).send(e);
-		});
+			.then((users) => {
+				res.status(200).send(users);
+			})
+			.catch((e) => {
+				res.status(500).send(e);
+			});
 	} else {
-		 throw new Error("Not Authorized.");
+		throw new Error("Not Authorized.");
 	}
-	
 };
 // if (req.role = "user"){
-		
+
 // 	}else {
 // 		 throw new Error("Not Authorized.");
 // 	}
@@ -55,10 +59,10 @@ exports.getAllUsers = (req, res, next) => {
 // Get User-Profile
 exports.getProfile = (req, res, next) => {
 	errorHandeler(req);
-	if (req.role == "user"){
+	if (req.role == "user") {
 		res.status(200).send(req.user);
 	} else {
-		 throw new Error("Not Authorized.");
+		throw new Error("Not Authorized.");
 	}
 };
 
@@ -74,48 +78,47 @@ exports.updateProfile = (req, res, next) => {
 		return res.status(400).send("error: Invalid updates!");
 	}
 
-	if (req.role == "user"){
+	if (req.role == "user") {
 		UserModel.findById(req.user._id)
-		.then((user) => {
-			if (!user) {
-				throw new Error("User Not Found");
-			}
+			.then((user) => {
+				if (!user) {
+					throw new Error("User Not Found");
+				}
 
-			updates.forEach((update) => {
-				user[update] = req.body[update];
+				updates.forEach((update) => {
+					user[update] = req.body[update];
+				});
+
+				// console.log(user)
+				return user.save();
+			})
+			.then((data) => {
+				res.status(201).send({ data });
+			})
+			.catch((e) => {
+				res.status(500).send(e);
 			});
-
-			// console.log(user)
-			return user.save();
-		})
-		.then((data) => {
-			res.status(201).send({ data });
-		})
-		.catch((e) => {
-			res.status(500).send(e);
-		});
-	}else {
-		 throw new Error("Not Authorized.");
+	} else {
+		throw new Error("Not Authorized.");
 	}
-	
 };
 
 // Delete User-Profile
 exports.deleteProfile = (req, res, next) => {
 	errorHandeler(req);
 
-	if (req.role == "user" || req.role == "admin" ){
+	if (req.role == "user" || req.role == "admin") {
 		UserModel.findByIdAndDelete(req.user._id)
-		.then((user) => {
-			if (!user) {
-				return res.status(404).send();
-			}
-			res.status(302).send(user);
-		})
-		.catch((e) => {
-			res.status(500).send(e);
-		});
-	}else {
-		 throw new Error("Not Authorized.");
+			.then((user) => {
+				if (!user) {
+					return res.status(404).send();
+				}
+				res.status(302).send(user);
+			})
+			.catch((e) => {
+				res.status(500).send(e);
+			});
+	} else {
+		throw new Error("Not Authorized.");
 	}
 };

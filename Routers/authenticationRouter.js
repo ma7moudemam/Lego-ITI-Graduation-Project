@@ -15,13 +15,12 @@ router.post(
 router.post(
 	"/register",
 	[
-		body("email").isEmail().withMessage("Enter a Valid Email"),
-		body("password").isStrongPassword().withMessage("Please enter a Strong Password"),
-		body("age").isInt().withMessage("Please Enter an integer number"),
+		body("signup_email").isEmail().withMessage("Enter a Valid Email"),
+		body("signup_password").isStrongPassword().withMessage("Please enter a Strong Password"),
+		body("day").isInt().withMessage("Please Enter an integer number"),
+		body("month").isInt().withMessage("Please Enter an integer number"),
+		body("year").isInt().withMessage("Please Enter an integer number"),
 		body("country").isString().withMessage("Must be a String"),
-		body("city").isString().withMessage("Please Enter A City"),
-		body("street").isString().withMessage("Please Enter A Street"),
-		body("building").isInt().withMessage("Please Enter A Number"),
 	],
 	controller.register
 );
