@@ -13,7 +13,7 @@ router
 
     .delete( isAuth, controller.deleteProduct)
 
-    .put( isAuth, controller.updateProduct)
+    .put(  controller.updateProduct)
 
 router.route("/product")
     .get( [], controller.getProduct)
