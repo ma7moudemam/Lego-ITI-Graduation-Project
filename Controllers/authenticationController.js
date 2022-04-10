@@ -62,12 +62,11 @@ exports.login = (request, response, next) => {
 exports.register = (request, response, next) => {
 	errorHandeler(request);
 	userModel
-		.findOne({ email: request.body.email })
+		.findOne({ email: request.body.signup_email })
 		.then((data) => {
 			if (data == null) response.redirect(307, "account");
 			else {
-				request.body.message = "You are Already a User";
-				response.redirect(307, "login");
+				throw new Error("You are Already a User");
 			}
 		})
 		.catch((error) => next(error));
