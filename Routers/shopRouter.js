@@ -9,11 +9,11 @@ router
 
     .get( [], controller.getAllProducts)
 
-    .post(isAuth, controller.addProduct)
+    .post(controller.addProduct)
 
     .delete( isAuth, controller.deleteProduct)
 
-    .put( isAuth, controller.updateProduct)
+    .put(  controller.updateProduct)
 
 router.route("/product")
     .get( [], controller.getProduct)
