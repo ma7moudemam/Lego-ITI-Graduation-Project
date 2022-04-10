@@ -6,6 +6,10 @@ const body_parser = require("body-parser");
 // Routes
 const multer = require("multer");
 const path = require("path");
+const stripe = require("stripe")(
+	"sk_test_51Kn6l7FX5cnEGu87iKqZftu9vmgK6dcWbk4K70vwIXBPdIqSc6VwclPKQGMKiyWjJI4AAlSnJcmDhBgZNlhivJkr008ROzrjsI"
+);
+const uuid = require("uuid");
 
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {
@@ -30,7 +34,6 @@ const orderRouter = require("./Routers/orderRouter");
 const shopRouter = require("./Routers/shopRouter");
 const cartRouter = require("./Routers/cartRouter");
 const blacklistRouter = require("./Routers/blacklistRouter");
-const paymentRouter = require("./Routers/paymentRouter");
 
 const app = express();
 mongoose
@@ -66,7 +69,30 @@ app.use(cartRouter);
 app.use(dashboardRouter);
 app.use(wishlistRouter);
 app.use(blacklistRouter);
-app.use(paymentRouter);
+app.post("/payment", (req, res) => {
+	const { product, token } = req.body;
+	const idempontencyKey = uuid();
+	return stripe.customers
+		.create({
+			email: token.email,
+			source: token.id,
+		})
+		.then((customer) => {
+			stripe.charges.create(
+				{
+					amount: product.price * 100,
+					currency: "EGP",
+					customer: customer.id,
+					receipt_email: token.email,
+					description: `Purchase of ${product.name}`,
+					shipping,
+				},
+				{ idempontencyKey }
+			);
+		})
+		.then((result) => res.status(200).json(result))
+		.catch((err) => console.log(err));
+});
 ////////
 
 // Not Found MW
