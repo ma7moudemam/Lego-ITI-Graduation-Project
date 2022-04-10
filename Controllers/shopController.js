@@ -11,32 +11,34 @@ exports.getAllProducts = async (req, res, next) => {
     let limit = req.query.limit || 5;
 
     let query = {};
-    let filter = JSON.parse(req.query.filter);
-    console.log(filter);
-
-    let priceRange = filter?.priceRange?.map(range=>{return {price: {$gte :  range.split('-')[0], $lte : range.split('-')[1]}}})
-    if(priceRange?.length >0) {
-         query = {$or: priceRange} 
-    } 
+    if(req.query.filter) {
+        let filter = JSON.parse(req.query.filter);
+        console.log(filter);
     
-    let category = filter.category
-    if(category && category.length > 0) {
-        let categoryQuery =  {category : { $in: category.map(val=>+val) }} 
-        query = {
-            ...query,
-           ...categoryQuery
+        let priceRange = filter?.priceRange?.map(range=>{return {price: {$gte :  range.split('-')[0], $lte : range.split('-')[1]}}})
+        if(priceRange?.length >0) {
+             query = {$or: priceRange} 
+        } 
+        
+        let category = filter.category
+        if(category && category.length > 0) {
+            let categoryQuery =  {category : { $in: category.map(val=>+val) }} 
+            query = {
+                ...query,
+               ...categoryQuery
+            }
+    
         }
-
-    }
-
-    let ratingFilter = filter.rating
-    if(ratingFilter && ratingFilter.length > 0) {
-        let ratingQuery =  {rating : { $in: ratingFilter.map(val=>+val) }} 
-        query = {
-            ...query,
-           ...ratingQuery
+    
+        let ratingFilter = filter.rating
+        if(ratingFilter && ratingFilter.length > 0) {
+            let ratingQuery =  {rating : { $in: ratingFilter.map(val=>+val) }} 
+            query = {
+                ...query,
+               ...ratingQuery
+            }
+    
         }
-
     }
     console.log('THE QUERY ',query);
 
