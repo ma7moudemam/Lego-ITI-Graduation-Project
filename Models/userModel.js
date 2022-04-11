@@ -2,40 +2,38 @@ const mongoose = require("mongoose");
 const autoIncrement = require("mongoose-sequence")(mongoose);
 
 const schema = new mongoose.Schema(
-	{
-		_id: Number,
-		email: {
-			type: String,
-			required: true,
-			unique: true,
-		},
-		password: {
-			type: String,
-			required: true,
-		},
-		userName:{
-			type: String,
-		},
-		age: {
-			type: Number,
-			required: true,
-		},
-		country: { type: String, required: true },
-		address: [
-			{
-				city: { type: String },
-				street: { type: String },
-				building: { type: Number },
-			},
-		],
-		wishlist: [
-			{
-				type: Number,
-				ref: "product",
-			},
-		],
-	},
-	{ _id: false }
+  {
+    _id: Number,
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    userName: {
+      type: String,
+    },
+    age: {
+      type: Number,
+      required: true,
+    },
+    country: { type: String, required: true },
+    address: {
+      city: { type: String },
+      street: { type: String },
+      building: { type: String },
+    },
+    wishlist: [
+      {
+        type: Number,
+        ref: "product",
+      },
+    ],
+  },
+  { _id: false }
 );
 
 schema.plugin(autoIncrement, { id: "user-auto-increament", inc_field: "_id" });

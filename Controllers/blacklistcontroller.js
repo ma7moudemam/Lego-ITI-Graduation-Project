@@ -22,7 +22,7 @@ const blackUserList = new CronJob(
                 }
             }
         }
-        let removeDuplicatedUsers = new Set(blockUsers)
+       //  let removeDuplicatedUsers = new Set(blockUsers)
         if (blockUserCount >= 1){
             return removeDuplicatedUsers
         } else {
@@ -45,6 +45,7 @@ exports.addBlockUsers = (req,res,next) =>{
             .catch((error) => next(error));
     }else {
         throw new Error ("not authintcated")
+        
     }
 }
 

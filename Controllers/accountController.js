@@ -35,28 +35,11 @@ exports.postUser = (req, res, next) => {
 		.catch((error) => next(error));
 };
 
-// Get Users => Admin
-exports.getAllUsers = (req, res, next) => {
-	errorHandeler(req);
-
-	if (req.role == "admin") {
-		UserModel.find({})
-			.then((users) => {
-				res.status(200).send(users);
-			})
-			.catch((e) => {
-				res.status(500).send(e);
-			});
-	} else {
-		throw new Error("Not Authorized.");
-	}
-};
-
 // Get User-Profile
 exports.getProfile = (req, res, next) => {
 	errorHandeler(req);
 	if (req.role == "user") {
-		res.status(200).send(req.user);
+		res.status(200).json(req.user);
 	} else {
 		throw new Error("Not Authorized.");
 	}
@@ -64,16 +47,19 @@ exports.getProfile = (req, res, next) => {
 
 // Update User-Profile
 exports.updateProfile = (req, res, next) => {
-	errorHandeler(req);
-
+	console.log("back end");
+	console.log(req.body);
+	// errorHandeler(req);
 	// Case => update not valid keys
 	const updates = Object.keys(req.body);
 	const allwoedUpdates = [
+		"userName",
 		"email",
 		"password",
 		"year",
 		"month",
 		"day",
+		"age",
 		"address",
 		"country",
 		"street",
@@ -81,28 +67,38 @@ exports.updateProfile = (req, res, next) => {
 		"building",
 	];
 	const isValidOperation = updates.every((update) => allwoedUpdates.includes(update));
+
 	if (!isValidOperation) {
-		return res.status(400).send("error: Invalid updates!");
+		console.log("not vaild update");
+		return res.status(400).json("error: Invalid updates!");
 	}
 
 	if (req.role == "user") {
+		console.log("fisrt if ");
 		UserModel.findById(req.user._id)
 			.then((user) => {
+				console.log("fir then ");
 				if (!user) {
+					console.log("sec if");
 					throw new Error("User Not Found");
 				}
-				// user.age: getAge(),
-				updates.forEach((update) => {
+
+				let hashedPassword = bcrypt.hashSync(req.body.password, 15);
+
+				updates.forEach(({ password, ...update }) => {
+					console.log(update);
 					user[update] = req.body[update];
 				});
 
 				return user.save();
 			})
 			.then((data) => {
-				res.status(201).send({ data });
+				console.log("sec then ");
+				res.status(201).json({ data });
 			})
 			.catch((e) => {
-				res.status(500).send(e);
+				console.log(e);
+				res.status(500).json(e);
 			});
 	} else {
 		throw new Error("Not Authorized.");
@@ -118,7 +114,7 @@ exports.addAddress = (req, res, next) => {
 	const allwoedUpdates = ["address", "country", "street", "city", "building"];
 	const isValidOperation = updates.every((update) => allwoedUpdates.includes(update));
 	if (!isValidOperation) {
-		return res.status(400).send("error: Invalid updates!");
+		return res.status(400).json("error: Invalid updates!");
 	}
 
 	if (req.role == "user") {
@@ -135,10 +131,10 @@ exports.addAddress = (req, res, next) => {
 				return user.save();
 			})
 			.then((data) => {
-				res.status(201).send({ data });
+				res.status(201).json({ data });
 			})
 			.catch((e) => {
-				res.status(500).send(e);
+				res.status(500).json(e);
 			});
 	} else {
 		throw new Error("Not Authorized.");
@@ -153,12 +149,12 @@ exports.deleteProfile = (req, res, next) => {
 		UserModel.findByIdAndDelete(req.user._id)
 			.then((user) => {
 				if (!user) {
-					return res.status(404).send();
+					return res.status(404).json();
 				}
-				res.status(302).send(user);
+				res.status(302).json(user);
 			})
 			.catch((e) => {
-				res.status(500).send(e);
+				res.status(500).json(e);
 			});
 	} else {
 		throw new Error("Not Authorized.");
