@@ -64,8 +64,37 @@ exports.register = (request, response, next) => {
 	userModel
 		.findOne({ email: request.body.signup_email })
 		.then((data) => {
-			if (data == null) response.redirect(307, "account");
-			else {
+			if (data == null) {
+				errorHandeler(req);
+				let hashedPassword = bcrypt.hashSync(req.body.signup_password, 15);
+				function getAge() {
+					var today = new Date();
+					var birthDate = new Date(`${req.body.year}/${req.body.month}/${req.body.day}`);
+					var age = today.getFullYear() - birthDate.getFullYear();
+					var m = today.getMonth() - birthDate.getMonth();
+					if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+						age--;
+					}
+					return age;
+				}
+				let object = new userModel({
+					email: req.body.signup_email,
+					password: hashedPassword,
+					userName: req.body.userName,
+					age: getAge(),
+					country: req.body.country,
+					address: {
+						city: req.body.city,
+						street: req.body.street,
+						building: req.body.building,
+					},
+					wishlist: [],
+				});
+				object
+					.save()
+					.then((data) => res.status(200).json({ data }))
+					.catch((error) => next(error));
+			} else {
 				throw new Error("You are Already a User");
 			}
 		})
