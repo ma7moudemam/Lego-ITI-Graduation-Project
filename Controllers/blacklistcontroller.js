@@ -45,6 +45,7 @@ exports.addBlockUsers = (req,res,next) =>{
             .catch((error) => next(error));
     }else {
         throw new Error ("not authintcated")
+        
     }
 }
 
