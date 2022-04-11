@@ -13,6 +13,9 @@ const schema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		userName:{
+			type: String,
+		},
 		age: {
 			type: Number,
 			required: true,

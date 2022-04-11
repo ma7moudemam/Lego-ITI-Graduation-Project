@@ -46,7 +46,7 @@ exports.login = (request, response, next) => {
 				if (bcrypt.compareSync(request.body.password, data.password)) {
 					let token = JWT.sign(
 						{
-							email: request.body.email,
+							user: data,
 							role: "user",
 						},
 						process.env.SECRET_KEY,
