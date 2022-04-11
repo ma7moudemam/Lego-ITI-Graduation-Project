@@ -66,11 +66,20 @@ exports.getProfile = (req, res, next) => {
 exports.updateProfile = (req, res, next) => {
 	errorHandeler(req);
 
-
-
 	// Case => update not valid keys
 	const updates = Object.keys(req.body);
-	const allwoedUpdates = ["email", "password", "year", "month", "day", "address", "country", "street", "city", "building"];
+	const allwoedUpdates = [
+		"email",
+		"password",
+		"year",
+		"month",
+		"day",
+		"address",
+		"country",
+		"street",
+		"city",
+		"building",
+	];
 	const isValidOperation = updates.every((update) => allwoedUpdates.includes(update));
 	if (!isValidOperation) {
 		return res.status(400).send("error: Invalid updates!");
@@ -120,7 +129,7 @@ exports.addAddress = (req, res, next) => {
 				}
 
 				updates.forEach((update) => {
-					user[update].push(req.body[update])
+					user[update].push(req.body[update]);
 				});
 
 				return user.save();
@@ -135,7 +144,6 @@ exports.addAddress = (req, res, next) => {
 		throw new Error("Not Authorized.");
 	}
 };
-
 
 // Delete User-Profile
 exports.deleteProfile = (req, res, next) => {
