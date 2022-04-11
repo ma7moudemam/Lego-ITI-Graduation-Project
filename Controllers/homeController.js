@@ -17,15 +17,12 @@ exports.getProducts = async (req, res, next) => {
 // Get Random Products
 exports.getRandomProducts = async (req, res, next) => {
     errorHandeler(req);
-
     try {
 
         const randomProduct = await ProductModel.aggregate(
             [ { $sample: { size: 7 } } ]
         )
-
         return res.status(201).send({randomProduct})
-        
     } catch (e) {
      res.status(400).send(e)   
     }
@@ -34,7 +31,6 @@ exports.getRandomProducts = async (req, res, next) => {
 // Get new Products
 exports.getNewProducts = async (req, res, next) => {
     errorHandeler(req);
-    
     try {
         const newProducts = await ProductModel.find({}).sort({_id: -1}).limit(3);
 
@@ -49,14 +45,9 @@ exports.getNewProducts = async (req, res, next) => {
 
 // get trending products
 exports.getTrendingProducts = async (req, res, next) => {
-    errorHandeler(req);
-
-    // return res.status(201).send("hhhh")
-    
+    errorHandeler(req);    
     try {
         const trendingProducts = await ProductModel.find( { rating: { $gte: 3} } ).limit(3);
-
-        // console.log(newProducts);
 
         return res.status(201).send({trendingProducts})
         
