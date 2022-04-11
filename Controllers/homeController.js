@@ -1,7 +1,6 @@
 const errorHandeler = require("./errorHandeler.js")
 const ProductModel = require('./../Models/productModel')
 
-// Get Random Products
 exports.getProducts = async (req, res, next) => {
     errorHandeler(req);
 
@@ -15,5 +14,55 @@ exports.getProducts = async (req, res, next) => {
 }
 
 
+// Get Random Products
+exports.getRandomProducts = async (req, res, next) => {
+    errorHandeler(req);
+
+    try {
+
+        const randomProduct = await ProductModel.aggregate(
+            [ { $sample: { size: 7 } } ]
+        )
+
+        return res.status(201).send({randomProduct})
+        
+    } catch (e) {
+     res.status(400).send(e)   
+    }
+}
+
+// Get new Products
+exports.getNewProducts = async (req, res, next) => {
+    errorHandeler(req);
+    
+    try {
+        const newProducts = await ProductModel.find({}).sort({_id: -1}).limit(3);
+
+        console.log(newProducts);
+
+        return res.status(201).send({newProducts})
+        
+    } catch (e) {
+     res.status(400).send(e)   
+    }
+}
+
+// get trending products
+exports.getTrendingProducts = async (req, res, next) => {
+    errorHandeler(req);
+
+    // return res.status(201).send("hhhh")
+    
+    try {
+        const trendingProducts = await ProductModel.find( { rating: { $gte: 3} } ).limit(3);
+
+        // console.log(newProducts);
+
+        return res.status(201).send({trendingProducts})
+        
+    } catch (e) {
+     res.status(400).send(e)   
+    }
+}
 
 

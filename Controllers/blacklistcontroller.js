@@ -22,7 +22,7 @@ const blackUserList = new CronJob(
                 }
             }
         }
-        let removeDuplicatedUsers = new Set(blockUsers)
+         let removeDuplicatedUsers = new Set(blockUsers)
         if (blockUserCount >= 1){
             return removeDuplicatedUsers
         } else {
