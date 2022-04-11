@@ -65,11 +65,11 @@ exports.register = (request, response, next) => {
 		.findOne({ email: request.body.signup_email })
 		.then((data) => {
 			if (data == null) {
-				errorHandeler(req);
-				let hashedPassword = bcrypt.hashSync(req.body.signup_password, 15);
+				errorHandeler(request);
+				let hashedPassword = bcrypt.hashSync(request.body.signup_password, 15);
 				function getAge() {
 					var today = new Date();
-					var birthDate = new Date(`${req.body.year}/${req.body.month}/${req.body.day}`);
+					var birthDate = new Date(`${request.body.year}/${request.body.month}/${request.body.day}`);
 					var age = today.getFullYear() - birthDate.getFullYear();
 					var m = today.getMonth() - birthDate.getMonth();
 					if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
@@ -78,15 +78,15 @@ exports.register = (request, response, next) => {
 					return age;
 				}
 				let object = new userModel({
-					email: req.body.signup_email,
+					email: request.body.signup_email,
 					password: hashedPassword,
-					userName: req.body.userName,
+					userName: request.body.userName,
 					age: getAge(),
-					country: req.body.country,
+					country: request.body.country,
 					address: {
-						city: req.body.city,
-						street: req.body.street,
-						building: req.body.building,
+						city: request.body.city,
+						street: request.body.street,
+						building: request.body.building,
 					},
 					wishlist: [],
 				});

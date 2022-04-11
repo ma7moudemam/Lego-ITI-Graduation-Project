@@ -20,7 +20,7 @@ router.post(
 		body("day").isInt().withMessage("Please Enter an integer number"),
 		body("month").isInt().withMessage("Please Enter an integer number"),
 		body("year").isInt().withMessage("Please Enter an integer number"),
-		body("country").isString().withMessage("Must be a String"),
+		body("country").isString().withMessage("Country Must be a String"),
 	],
 	controller.register
 );
