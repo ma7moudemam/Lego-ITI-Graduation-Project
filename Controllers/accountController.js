@@ -3,7 +3,6 @@ const UserModel = require("./../Models/userModel");
 const bcrypt = require("bcrypt");
 
 exports.postUser = (req, res, next) => {
-	console.log("in");
 	errorHandeler(req);
 	let hashedPassword = bcrypt.hashSync(req.body.signup_password, 15);
 	function getAge() {
