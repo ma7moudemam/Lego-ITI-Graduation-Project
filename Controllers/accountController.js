@@ -19,6 +19,7 @@ exports.postUser = (req, res, next) => {
 	let object = new UserModel({
 		email: req.body.signup_email,
 		password: hashedPassword,
+		userName: req.body.userName,
 		age: getAge(),
 		country: req.body.country,
 		address: {
@@ -50,11 +51,6 @@ exports.getAllUsers = (req, res, next) => {
 		throw new Error("Not Authorized.");
 	}
 };
-// if (req.role = "user"){
-
-// 	}else {
-// 		 throw new Error("Not Authorized.");
-// 	}
 
 // Get User-Profile
 exports.getProfile = (req, res, next) => {
@@ -70,9 +66,11 @@ exports.getProfile = (req, res, next) => {
 exports.updateProfile = (req, res, next) => {
 	errorHandeler(req);
 
+
+
 	// Case => update not valid keys
 	const updates = Object.keys(req.body);
-	const allwoedUpdates = ["email", "password", "age", "address", "country", "street", "city", "building"];
+	const allwoedUpdates = ["email", "password", "year", "month", "day", "address", "country", "street", "city", "building"];
 	const isValidOperation = updates.every((update) => allwoedUpdates.includes(update));
 	if (!isValidOperation) {
 		return res.status(400).send("error: Invalid updates!");
@@ -84,12 +82,11 @@ exports.updateProfile = (req, res, next) => {
 				if (!user) {
 					throw new Error("User Not Found");
 				}
-
+				// user.age: getAge(),
 				updates.forEach((update) => {
 					user[update] = req.body[update];
 				});
 
-				// console.log(user)
 				return user.save();
 			})
 			.then((data) => {
@@ -103,11 +100,48 @@ exports.updateProfile = (req, res, next) => {
 	}
 };
 
+// Update User-Profile
+exports.addAddress = (req, res, next) => {
+	errorHandeler(req);
+
+	// Case => update not valid keys
+	const updates = Object.keys(req.body);
+	const allwoedUpdates = ["address", "country", "street", "city", "building"];
+	const isValidOperation = updates.every((update) => allwoedUpdates.includes(update));
+	if (!isValidOperation) {
+		return res.status(400).send("error: Invalid updates!");
+	}
+
+	if (req.role == "user") {
+		UserModel.findById(req.user._id)
+			.then((user) => {
+				if (!user) {
+					throw new Error("User Not Found");
+				}
+
+				updates.forEach((update) => {
+					user[update].push(req.body[update])
+				});
+
+				return user.save();
+			})
+			.then((data) => {
+				res.status(201).send({ data });
+			})
+			.catch((e) => {
+				res.status(500).send(e);
+			});
+	} else {
+		throw new Error("Not Authorized.");
+	}
+};
+
+
 // Delete User-Profile
 exports.deleteProfile = (req, res, next) => {
 	errorHandeler(req);
 
-	if (req.role == "user" || req.role == "admin") {
+	if (req.role == "user") {
 		UserModel.findByIdAndDelete(req.user._id)
 			.then((user) => {
 				if (!user) {
