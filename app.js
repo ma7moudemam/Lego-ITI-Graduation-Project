@@ -10,21 +10,6 @@ const stripe = require("stripe")(
 	"sk_test_51Kn6l7FX5cnEGu87iKqZftu9vmgK6dcWbk4K70vwIXBPdIqSc6VwclPKQGMKiyWjJI4AAlSnJcmDhBgZNlhivJkr008ROzrjsI"
 );
 const uuid = require("uuid");
-
-const storage = multer.diskStorage({
-	destination: (request, file, callback) => {
-		callback(null, path.join(__dirname, "images"));
-	},
-	filename: (req, file, callback) => {
-		callback(null, new Date().toLocaleDateString().replace(/\//g, "-") + "-" + file.originalname);
-	},
-});
-const limits = { fileSize: 838861 };
-const fileFilter = (request, file, callback) => {
-	if (file.mimetype == "image/jpeg" || file.mimetype == "image/jpg" || file.mimetype == "image/png")
-		callback(null, true);
-};
-
 const authenticationRouter = require("./Routers/authenticationRouter");
 const homeRouter = require("./Routers/homeRouter");
 const accountRouter = require("./Routers/accountRouter");
@@ -36,6 +21,22 @@ const cartRouter = require("./Routers/cartRouter");
 const blacklistRouter = require("./Routers/blacklistRouter");
 
 const app = express();
+const storage = multer.diskStorage({
+	destination: (request, file, callback) => {
+		callback(null, path.join(__dirname, "images"));
+	},
+	filename: (req, file, callback) => {
+		console.log("file", file)
+		callback(null, new Date().toLocaleDateString().replace(/\//g, "-") + "-" + file.originalname);
+	},
+});
+const limits = { fileSize: 838861 };
+const fileFilter = (request, file, callback) => {
+	if (file.mimetype == "image/jpeg" || file.mimetype == "image/jpg" || file.mimetype == "image/png")
+		callback(null, true);
+};
+
+
 mongoose
 	.connect(process.env.DB_URL)
 	.then(() => {
@@ -54,10 +55,12 @@ app.use((request, response, next) => {
 	next();
 });
 
-app.use(body_parser.json());
 // calling multer and giving static path for images
 app.use("/images", express.static(path.join(__dirname, "images")));
-app.use(multer({ storage, limits, fileFilter }).array("image"));
+app.use(multer({ storage, limits, fileFilter }).single("images"));
+
+app.use(body_parser.json());
+app.use(body_parser.urlencoded({ extended: true }))
 
 ///////  Router
 app.use(authenticationRouter);
