@@ -52,6 +52,7 @@ exports.login = (request, response, next) => {
 						process.env.SECRET_KEY,
 						{ expiresIn: "2h" }
 					);
+					console.log(data)
 					response.status(200).json({ message: `Welcome user`, data, token });
 				} else throw new Error("Email or Password is not Correct");
 			})
@@ -90,6 +91,7 @@ exports.register = (request, response, next) => {
 					},
 					wishlist: [],
 				});
+				console.log("inside register")
 				object
 					.save()
 					.then((data) => response.status(200).json({ data }))
