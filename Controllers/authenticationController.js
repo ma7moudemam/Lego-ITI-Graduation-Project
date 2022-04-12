@@ -92,7 +92,7 @@ exports.register = (request, response, next) => {
 				});
 				object
 					.save()
-					.then((data) => res.status(200).json({ data }))
+					.then((data) => response.status(200).json({ data }))
 					.catch((error) => next(error));
 			} else {
 				throw new Error("You are Already a User");
