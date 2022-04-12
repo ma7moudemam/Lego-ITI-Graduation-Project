@@ -10,8 +10,8 @@ dashboardRouter.get("/dashboard", isAuth, controller.statistics);
 
 // products
 dashboardRouter.route("/dashboard/products")
-    .get(isAuth, controller.getAllProducts)
-    .post(isAuth, [
+    .get(controller.getAllProducts)
+    .post([
         body("productName").isString().withMessage("ProductName must be text"),
         body("price").isInt().withMessage("price is mandatory and must be a number"),
         body("amount").isInt().withMessage("amount is mandatory and must be a number"),
@@ -21,8 +21,9 @@ dashboardRouter.route("/dashboard/products")
     .put(isAuth, controller.updateProduct)
     .delete(isAuth, controller.deleteProduct);
 // users
-// dashboardRouter.route("/dashboard/users")
-//     .get(isAuth, controller.getAllUsers);
+dashboardRouter.route("/dashboard/users")
+    .get(controller.getAllUsers)
+    .post([body("email").isEmail().withMessage("email is a must")], controller.sendUserToBlacklist);
 //orders
 dashboardRouter.route("/dashboard/orders")
     .get(isAuth, controller.getAllOrders)
@@ -41,12 +42,12 @@ dashboardRouter.route("/dashboard/stock")
 
 dashboardRouter.route("/dashboard/category")
     .get(controller.getAllCategories)
-    .post(isAuth, [
+    .post([
         body("categoryName").isString().withMessage("category name must be a text"),
-        body("products").isInt().withMessage("products is integer")
+        // body("products").isArray().withMessage("products is array of integers")
     ], controller.addNewCategory)
-    .put(isAuth, controller.updateCategory)
-    .delete(isAuth, controller.deleteCategory);
+    .put(controller.updateCategory)
+    .delete(controller.deleteCategory);
 
 dashboardRouter.route("/dashboard/shipper")
     .get(isAuth, controller.getAllShippers)

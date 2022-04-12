@@ -38,26 +38,28 @@ exports.statistics = (req, res, next) => {
 /************ product ***********/
 exports.getAllProducts = (req, res, next) => {
     // should get all products
-    if (req.role === "admin") {
-        Product.find({}).sort({ _id: -1 })
-            .then(data => {
-                if (data == null) throw new Error("you have zero products")
-                res.status(200).json({ data: "your products on a silver plate", products: data })
-            }).catch(err => next(err))
-    }
+    // if (req.role === "admin") {
+    Product.find({}).sort({ _id: -1 })
+        .then(data => {
+            if (data == null) throw new Error("you have zero products")
+            res.status(200).json({ data: "your products on a silver plate", products: data })
+        }).catch(err => next(err))
+    // }
 }
 
 exports.addProduct = (req, res, next) => {
     errHandler(req);
     // should add new product
+    // console.log(req.body)
     if (req.role = "admin") {
         let newProduct = new Product({
             name: req.body.productName,
-            // images: [{ type: String, required: true }],
+            images: req.file.filename,
             price: req.body.price,
             amount: req.body.amount,
             sold: 0,
             rating: req.body.rating,
+            category: req.body.category
         })
 
         newProduct.save()
@@ -65,6 +67,8 @@ exports.addProduct = (req, res, next) => {
                 if (data == null) throw new Error("we didn't add the product")
                 res.status(201).json({ message: "added", data })
             }).catch(err => next(err))
+    } else {
+        throw new Error("u r not authorized to add product")
     }
 }
 
@@ -97,6 +101,18 @@ exports.deleteProduct = (req, res, next) => {
 }
 
 /************** user *********** */
+
+exports.getAllUsers = (req, res, next) => {
+    // should get all products
+    // if (req.role === "admin") {
+    Users.find({}).sort({ _id: -1 })
+        .then(data => {
+            if (data == null) throw new Error("you have zero Users")
+            res.status(200).json({ data: "your Users on a silver plate", users: data })
+        }).catch(err => next(err))
+    // }
+}
+
 // the admin can put a user in the blacklist
 exports.sendUserToBlacklist = (req, res, next) => {
     // should get all users
@@ -115,6 +131,8 @@ exports.sendUserToBlacklist = (req, res, next) => {
                         res.status(201).json({ message: "user added to blacklist", data })
                     })
             })
+    } else {
+        throw new Error("u r not authorized")
     }
 
 }
@@ -208,50 +226,53 @@ exports.deleteStock = (req, res, next) => {
 exports.getAllCategories = (req, res, next) => {
     // if (req.role === "admin") {
 
-        Category.find({})
-            .then(data => {
-                if (data == null) throw new Error("something went wrong while getting category")
-                res.status(200).json({ data: "your category is here", body: data })
-            }).catch(err => next(err))
+    Category.find({})
+        .then(data => {
+            if (data == null) throw new Error("something went wrong while getting category")
+            res.status(200).json({ data: "your category is here", body: data })
+        }).catch(err => next(err))
     // }
 }
 exports.addNewCategory = (req, res, next) => {
     errHandler(req);
-    if (req.role === "admin") {
+    // if (req.role === "admin") {
 
-        let newCategory = new Category({
-            name: req.body.categoryName,
-            products: req.body.products,
+    let newCategory = new Category({
+        name: req.body.categoryName,
+        // products: req.body.products,
+    })
+    newCategory.save()
+        .then(data => {
+            if (data == null) throw new Error("we didn't add the item to the categories")
+            res.status(201).json({ message: "added", data })
         })
-        newCategory.save()
-            .then(data => {
-                if (data == null) throw new Error("we didn't add the item to the categories")
-                res.status(201).json({ message: "added", data })
-            })
-    }
+    // }else{
+    //     throw new Error("you r not authorized to add new Category")
+    // }
 }
 exports.updateCategory = (req, res, next) => {
-    if (req.role === "admin") {
+    // if (req.role === "admin") {
 
-        Category.updateOne({ _id: req.body.id }, {
-            $set: {
-                product: req.body.products
-            }
-        }).then(data => {
-            if (data == null) throw new Error(`we have no Category with this id ${req.body.id}`);
-            res.status(200).json({ data: "updated", body: data })
-        }).catch(err => next(err))
-    }
+    Category.updateOne({ _id: req.body.id }, {
+        $set: {
+            name: req.body.name,
+            // products: req.body.products
+        }
+    }).then(data => {
+        if (data == null) throw new Error(`we have no Category with this id ${req.body.id}`);
+        res.status(200).json({ data: "updated", body: data })
+    }).catch(err => next(err))
+    // }
 }
 exports.deleteCategory = (req, res, next) => {
-    if (req.role === "admin") {
+    // if (req.role === "admin") {
 
-        Category.deleteOne({ _id: req.body.id })
-            .then(data => {
-                if (data == null) throw new Error("something went wrong while deleting the Category")
-                res.status(200).json({ data: "Category has been deleted", body: data })
-            }).catch(err => next(err))
-    }
+    Category.deleteOne({ _id: req.body.id })
+        .then(data => {
+            if (data == null) throw new Error("something went wrong while deleting the Category")
+            res.status(200).json({ data: "Category has been deleted", body: data })
+        }).catch(err => next(err))
+    // }
 }
 
 /************** shipper *********** */
