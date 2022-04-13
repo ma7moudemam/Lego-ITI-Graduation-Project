@@ -3,13 +3,10 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const body_parser = require("body-parser");
+const cors = require("cors");
 // Routes
 const multer = require("multer");
 const path = require("path");
-const stripe = require("stripe")(
-	"sk_test_51Kn6l7FX5cnEGu87iKqZftu9vmgK6dcWbk4K70vwIXBPdIqSc6VwclPKQGMKiyWjJI4AAlSnJcmDhBgZNlhivJkr008ROzrjsI"
-);
-const uuid = require("uuid");
 const authenticationRouter = require("./Routers/authenticationRouter");
 const homeRouter = require("./Routers/homeRouter");
 const accountRouter = require("./Routers/accountRouter");
@@ -19,6 +16,7 @@ const orderRouter = require("./Routers/orderRouter");
 const shopRouter = require("./Routers/shopRouter");
 const cartRouter = require("./Routers/cartRouter");
 const blacklistRouter = require("./Routers/blacklistRouter");
+const createCheckoutSession = require("./api/checkout");
 
 const app = express();
 const storage = multer.diskStorage({
@@ -26,7 +24,7 @@ const storage = multer.diskStorage({
 		callback(null, path.join(__dirname, "images"));
 	},
 	filename: (req, file, callback) => {
-		console.log("file", file)
+		console.log("file", file);
 		callback(null, new Date().toLocaleDateString().replace(/\//g, "-") + "-" + file.originalname);
 	},
 });
@@ -35,7 +33,6 @@ const fileFilter = (request, file, callback) => {
 	if (file.mimetype == "image/jpeg" || file.mimetype == "image/jpg" || file.mimetype == "image/png")
 		callback(null, true);
 };
-
 
 mongoose
 	.connect(process.env.DB_URL)
@@ -48,19 +45,14 @@ mongoose
 
 app.use(morgan(":method :url"));
 
-app.use((request, response, next) => {
-	response.header("Access-Control-Allow-Origin", "*");
-	response.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
-	response.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
-	next();
-});
+app.use(cors({ origin: true }));
 
 // calling multer and giving static path for images
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(multer({ storage, limits, fileFilter }).single("images"));
 
 app.use(body_parser.json());
-app.use(body_parser.urlencoded({ extended: true }))
+app.use(body_parser.urlencoded({ extended: true }));
 
 ///////  Router
 app.use(authenticationRouter);
@@ -72,30 +64,7 @@ app.use(cartRouter);
 app.use(dashboardRouter);
 app.use(wishlistRouter);
 app.use(blacklistRouter);
-app.post("/payment", (req, res) => {
-	const { product, token } = req.body;
-	const idempontencyKey = uuid();
-	return stripe.customers
-		.create({
-			email: token.email,
-			source: token.id,
-		})
-		.then((customer) => {
-			stripe.charges.create(
-				{
-					amount: product.price * 100,
-					currency: "EGP",
-					customer: customer.id,
-					receipt_email: token.email,
-					description: `Purchase of ${product.name}`,
-					shipping,
-				},
-				{ idempontencyKey }
-			);
-		})
-		.then((result) => res.status(200).json(result))
-		.catch((err) => console.log(err));
-});
+app.post("/create-checkout-session", createCheckoutSession);
 ////////
 
 // Not Found MW
