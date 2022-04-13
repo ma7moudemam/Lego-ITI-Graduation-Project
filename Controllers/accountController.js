@@ -82,9 +82,9 @@ exports.updateProfile = (req, res, next) => {
 					throw new Error("User Not Found");
 				}
 
-				let hashedPassword = bcrypt.hashSync(req.body.password, 15);
+				// let hashedPassword = bcrypt.hashSync(req.body.password, 15);
 
-				updates.forEach(({ password, ...update }) => {
+				updates.forEach((update) => {
 					console.log(update);
 					user[update] = req.body[update];
 				});
