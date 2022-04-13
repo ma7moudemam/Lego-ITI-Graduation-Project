@@ -17,6 +17,7 @@ const shopRouter = require("./Routers/shopRouter");
 const cartRouter = require("./Routers/cartRouter");
 const blacklistRouter = require("./Routers/blacklistRouter");
 const createCheckoutSession = require("./api/checkout");
+const webhook = require("./api/weebhook");
 
 const app = express();
 const storage = multer.diskStorage({
@@ -51,7 +52,11 @@ app.use(cors({ origin: true }));
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(multer({ storage, limits, fileFilter }).single("images"));
 
-app.use(body_parser.json());
+app.use(
+	express.json({
+		verify: (req, res, buf, encoding) => (req["rawBody"] = buf),
+	})
+);
 app.use(body_parser.urlencoded({ extended: true }));
 
 ///////  Router
@@ -65,6 +70,7 @@ app.use(dashboardRouter);
 app.use(wishlistRouter);
 app.use(blacklistRouter);
 app.post("/create-checkout-session", createCheckoutSession);
+app.post("/webhook", webhook);
 ////////
 
 // Not Found MW
