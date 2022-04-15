@@ -39,7 +39,7 @@ exports.statistics = (req, res, next) => {
 exports.getAllProducts = (req, res, next) => {
     // should get all products
     // if (req.role === "admin") {
-    Product.find({}).sort({ _id: -1 })
+    Product.find({}).sort({ _id: -1 }).populate("category")
         .then(data => {
             if (data == null) throw new Error("you have zero products")
             res.status(200).json({ data: "your products on a silver plate", products: data })
@@ -50,11 +50,18 @@ exports.getAllProducts = (req, res, next) => {
 exports.addProduct = (req, res, next) => {
     errHandler(req);
     // should add new product
-    // console.log(req.body)
+    console.log(req.files)
+    let imagesNames = [];
+
+    for (let i = 0; i < req.files.length; i++) {
+
+        imagesNames.push(new Date().toLocaleDateString().replace(/\//g, "-") + "-" + req.files[i].originalname)
+    }
+
     if (req.role = "admin") {
         let newProduct = new Product({
             name: req.body.productName,
-            images: req.file.filename,
+            images: imagesNames,
             price: req.body.price,
             amount: req.body.amount,
             sold: 0,
@@ -65,7 +72,7 @@ exports.addProduct = (req, res, next) => {
         newProduct.save()
             .then(data => {
                 if (data == null) throw new Error("we didn't add the product")
-                res.status(201).json({ message: "added", data })
+                res.status(201).json({ message: "Product has been added", data })
             }).catch(err => next(err))
     } else {
         throw new Error("u r not authorized to add product")
@@ -73,31 +80,38 @@ exports.addProduct = (req, res, next) => {
 }
 
 exports.updateProduct = (req, res, next) => {
-    if (req.role === "admin") {
-        Product.updateOne({ _id: req.body.id }, {
-            $set: {
-                name: req.body.productName,
-                // images: req.file.filename,
-                price: req.body.price,
-                amount: req.body.amount,
-                sold: 0,
-            }
-        }).then(data => {
-            if (data == null) throw new Error(`we have no product with this id ${req.body.id}`);
-            res.status(200).json({ data: "updated", body: data })
-        }).catch(err => next(err))
-    }
+    // if (req.role === "admin") {
+    console.log(req.body)
+    Product.updateOne({ _id: req.body.id }, {
+        $set: {
+            name: req.body.productName,
+            price: req.body.price,
+            amount: req.body.amount,
+            sold: 0,
+            category: req.body.category
+            // images: req.file.filename,
+        }
+    }).then(data => {
+        if (data == null) throw new Error(`we have no product with this id ${req.body.id}`);
+        res.status(200).json({ message: "updated", body: data })
+    }).catch(err => next(err))
+    // } else {
+    //     throw new Error("You are not authorized.")
+    // }
 
 
 }
 exports.deleteProduct = (req, res, next) => {
-    if (req.role === "admin") {
-        Product.deleteOne({ _id: req.body.id })
-            .then(data => {
-                if (data == null) throw new Error("something went wrong while deleting the product")
-                res.status(200).json({ data: "deleted", body: data })
-            }).catch(err => next(err))
-    }
+    // if (req.role === "admin") {
+    // console.log(req.body)
+    Product.deleteOne({ _id: req.body.id })
+        .then(data => {
+            if (data == null) throw new Error("something went wrong while deleting the product")
+            res.status(200).json({ data: "Product deleted", body: data })
+        }).catch(err => next(err))
+    // } else {
+    //     throw new Error("You are not authorized.")
+    // }
 }
 
 /************** user *********** */
@@ -236,16 +250,25 @@ exports.getAllCategories = (req, res, next) => {
 exports.addNewCategory = (req, res, next) => {
     errHandler(req);
     // if (req.role === "admin") {
-
-    let newCategory = new Category({
-        name: req.body.categoryName,
-        // products: req.body.products,
-    })
-    newCategory.save()
+    console.log(req.body)
+    let cateName = req.body.categoryName.toLowerCase()
+    Category.find({ name: cateName })
         .then(data => {
-            if (data == null) throw new Error("we didn't add the item to the categories")
-            res.status(201).json({ message: "added", data })
-        })
+            console.log(data)
+            if (data.length == 0) {
+                let newCategory = new Category({
+                    name: cateName
+                })
+                newCategory.save()
+                    .then(data => {
+                        if (data == null) throw new Error("we didn't add the item to the categories")
+                        res.status(201).json({ message: "added", data })
+                    })
+            } else {
+                res.status(400).json({ message: "You can't add 2 categories with same name" })
+            }
+        }).catch(err => next(err))
+
     // }else{
     //     throw new Error("you r not authorized to add new Category")
     // }

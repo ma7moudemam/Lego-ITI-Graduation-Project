@@ -57,7 +57,7 @@ app.use((request, response, next) => {
 
 // calling multer and giving static path for images
 app.use("/images", express.static(path.join(__dirname, "images")));
-app.use(multer({ storage, limits, fileFilter }).single("images"));
+app.use(multer({ storage, limits, fileFilter }).array("images"));
 
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: true }))
