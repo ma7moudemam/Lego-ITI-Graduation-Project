@@ -7,7 +7,7 @@ const { body, query, param } = require("express-validator")
 router
     .route("/cart")
 
-    .get( isAuth,controller.getCart)
+    .get(controller.getCart)
 
     .post(isAuth, controller.createCart)
 
