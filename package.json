@@ -30,8 +30,7 @@
     "mongoose-sequence": "^5.3.1",
     "multer": "^1.4.4",
     "node-schedule": "^2.1.0",
-    "stripe": "^8.216.0",
-    "uuid": "^8.3.2"
+    "stripe": "^8.216.0"
   },
   "devDependencies": {
     "morgan": "^1.10.0"

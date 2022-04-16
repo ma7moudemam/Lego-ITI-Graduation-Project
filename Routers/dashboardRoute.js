@@ -13,13 +13,15 @@ dashboardRouter.route("/dashboard/products")
     .get(controller.getAllProducts)
     .post([
         body("productName").isString().withMessage("ProductName must be text"),
+        // body("images").isArray().withMessage("images is an array of strings"),
         body("price").isInt().withMessage("price is mandatory and must be a number"),
         body("amount").isInt().withMessage("amount is mandatory and must be a number"),
         body("sold").isInt().withMessage("amount is mandatory and must be a number"),
-        body("rating").isInt().withMessage("rating is not valid")
+        body("rating").isInt().withMessage("rating is not valid"),
+        body("category").isInt().withMessage("category should be a number"),
     ], controller.addProduct)
-    .put(isAuth, controller.updateProduct)
-    .delete(isAuth, controller.deleteProduct);
+    .put(controller.updateProduct)
+    .delete(controller.deleteProduct);
 // users
 dashboardRouter.route("/dashboard/users")
     .get(controller.getAllUsers)
