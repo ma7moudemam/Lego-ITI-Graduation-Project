@@ -25,10 +25,16 @@ dashboardRouter.route("/dashboard/products")
 // users
 dashboardRouter.route("/dashboard/users")
     .get(controller.getAllUsers)
-    .post([body("email").isEmail().withMessage("email is a must")], controller.sendUserToBlacklist);
+    .post([body("email").isEmail().withMessage("email is a must")], controller.sendUserToBlacklist)
+    .put(controller.blockUser)
+    .delete(controller.unBlockUser);
+
+dashboardRouter.route("/dashboard/blacklist")
+    .get(controller.getBlockedUsers);
+
 //orders
 dashboardRouter.route("/dashboard/orders")
-    .get(isAuth, controller.getAllOrders)
+    .get(controller.getAllOrders);
 //reviews
 dashboardRouter.route("/dashboard/reviews")
     .get(isAuth, controller.getAllReviews)

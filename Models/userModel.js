@@ -32,6 +32,7 @@ const schema = new mongoose.Schema(
         ref: "product",
       },
     ],
+    blocked: { type: Boolean }
   },
   { _id: false }
 );

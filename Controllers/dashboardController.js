@@ -128,41 +128,87 @@ exports.getAllUsers = (req, res, next) => {
 }
 
 // the admin can put a user in the blacklist
-exports.sendUserToBlacklist = (req, res, next) => {
-    // should get all users
-    if (req.role === "admin") {
-        Users.findOne({ _id: req.body.email })
-            .then(data => {
-                if (data == null) throw new Error("we have no user with such email")
-                // add the use into the blacklist collection
-                let addToBlacklist = new Blacklist({
-                    user: data.email
-                })
-
-                addToBlacklist.save()
-                    .then(data => {
-                        if (data == null) throw new Error("we didn't add the product")
-                        res.status(201).json({ message: "user added to blacklist", data })
-                    })
-            })
-    } else {
-        throw new Error("u r not authorized")
-    }
-
+exports.getBlockedUsers = (req, res, next) => {
+    Blacklist.find({})
+        .then(data => {
+            if (data === null) throw new Error("black list is empty")
+            res.status(200).json({ message: "blacklist is here", blacklist: data })
+        }).catch(err => console.log(err))
 }
 
+exports.sendUserToBlacklist = (req, res, next) => {
+    // should get all users
+    // if (req.role === "admin") {
+    Users.findOne({ email: req.body.email })
+        .then(data => {
+            if (data == null) throw new Error("we have no user with such email")
+            // add the use into the blacklist collection
+            let addToBlacklist = new Blacklist({
+                user: data.email
+            })
+
+            addToBlacklist.save()
+                .then(data => {
+                    if (data == null) throw new Error("we didn't add the product")
+                    res.status(201).json({ message: "user added to blacklist", data })
+                })
+        })
+    // } else {
+    //     throw new Error("u r not authorized")
+    // }
+
+}
+exports.blockUser = (req, res, next) => {
+    console.log(req.body)
+    Users.updateOne({ _id: req.body.id }, {
+        $set: {
+            blocked: req.body.blocked
+        }
+    }).then(data => {
+        if (data == null) throw new Error(`we have no users with this id ${req.body.id}`);
+        res.status(200).json({ message: "user has been blocked", body: data })
+    }).catch(err => next(err))
+}
+exports.unBlockUser = (req, res, next) => {
+    Blacklist.deleteOne({ user: req.body.user })
+        .then(data => {
+            if (data == null) throw new Error("something went wrong while unblocking the user")
+            res.status(200).json({ data: "User has been unblocked", body: data })
+        }).catch(err => next(err))
+}
 /************** orders *********** */
 // the admin can see all the orders
 exports.getAllOrders = (req, res, next) => {
     // should get all orders
+    // if (req.role === "admin") {
+    console.log("before")
+    Orders.find({}).sort({ _id: -1 })
+        .populate("user")
+        .populate("product")
+        .then(data => {
+            console.log("then")
+            if (data == null) throw new Error("something went wrong while getting orders")
+            res.status(200).json({ data: "orders is here", orders: data })
+        })
+    // }
+}
+exports.updateOrder = (req, res, next) => {
+    // should get all orders
     if (req.role === "admin") {
-        Orders.find({}).sort({ _id: -1 })
+        Orders.updateOne({ _id: req.body.id }, {
+            $set: {
+                shipper: req.body.shipper,
+                isPending: true
+            }
+        })
             .then(data => {
                 if (data == null) throw new Error("something went wrong while getting orders")
                 res.json(200).json({ data: "orders is here", orders: data })
             })
     }
 }
+
+
 /************** review *********** */
 // the admin can see all the review
 // can add a reply on a review
@@ -315,6 +361,7 @@ exports.addNewShipper = (req, res, next) => {
 
         let newShipper = new Shipper({
             name: req.body.shipperName,
+            password: `${req.body.name}@lego`,
             contact: {
                 email: req.body.shipperEmail,
                 phone_number: req.body.phoneNumber,
@@ -332,7 +379,18 @@ exports.updateShipper = (req, res, next) => {
 
         Shipper.updateOne({ _id: req.body.id }, {
             $set: {
-                product: req.body.products
+                orders: req.body.orders
+            }
+        }).then(data => {
+            if (data == null) throw new Error(`we have no Shipper with this id ${req.body.id}`);
+            res.status(200).json({ data: "updated", body: data })
+        }).catch(err => next(err))
+    }
+    if (req.role === "shipper") {
+        Shipper.updateOne({ _id: req.body.id }, {
+            $set: {
+                password: req.body.password,
+
             }
         }).then(data => {
             if (data == null) throw new Error(`we have no Shipper with this id ${req.body.id}`);
@@ -342,7 +400,6 @@ exports.updateShipper = (req, res, next) => {
 }
 exports.deleteShipper = (req, res, next) => {
     if (req.role === "admin") {
-
         Shipper.deleteOne({ _id: req.body.id })
             .then(data => {
                 if (data == null) throw new Error("something went wrong while deleting the Shipper")
