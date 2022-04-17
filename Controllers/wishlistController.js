@@ -3,7 +3,7 @@ const User = require("./../Models/userModel");
 
 exports.getWishlist = (req, res, next) => {
     if (req.role === "user") {
-        User.findOne({ email: req.email })
+        User.findOne({ email: req.user.email }).populate('wishlist')
             .then(data => {
                 if (data == null) throw new Error("sign in first")
                 res.status(200).json({ data: "your wish list is here", wishlist: data.wishlist })
@@ -14,11 +14,11 @@ exports.getWishlist = (req, res, next) => {
 
 exports.updateWishlist = (req, res, next) => {
     if (req.role === "user") {
-        User.findOne({ email: req.email })
+        User.findOne({ email: req.user.email })
             .then(data => {
                 if (data == null) throw new Error("sign in first")
                 if (data.wishlist.includes(req.body.wishlist)) throw new Error("it's already in your wishlist")
-                User.updateOne({ email: req.email }, {
+                User.updateOne({ email: req.user.email }, {
                     $addToSet: { wishlist: req.body.wishlist }
                 }).then(data => {
                     if (data == null) throw new Error(`we have no product like this`)
