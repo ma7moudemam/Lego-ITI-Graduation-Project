@@ -10,6 +10,7 @@ function webhook(request, response) {
 	if (event.type === "checkout.session.completed") {
 		const session = event.data.object;
 		console.log("Event data", session);
+
 		//successful checkout data can be orders
 	}
 }
