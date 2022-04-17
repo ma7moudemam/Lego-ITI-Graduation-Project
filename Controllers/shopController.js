@@ -12,8 +12,6 @@ exports.getAllProducts = async (req, res, next) => {
 	let query = {};
 	if (req.query.filter) {
 		let filter = JSON.parse(req.query.filter);
-		console.log(filter);
-
 		let priceRange = filter?.priceRange?.map((range) => {
 			return { price: { $gte: range.split("-")[0], $lte: range.split("-")[1] } };
 		});
@@ -23,7 +21,7 @@ exports.getAllProducts = async (req, res, next) => {
 
 		let category = filter.category;
 		if (category && category.length > 0) {
-			let categoryQuery = { category: { $in: category.map((val) => +val) } };
+			let categoryQuery = { category: { $in: category.map((val) => +val) } }; // ["1,"2"] =====> [1,2]
 			query = {
 				...query,
 				...categoryQuery,
@@ -32,14 +30,13 @@ exports.getAllProducts = async (req, res, next) => {
 
 		let ratingFilter = filter.rating;
 		if (ratingFilter && ratingFilter.length > 0) {
-			let ratingQuery = { rating: { $in: ratingFilter.map((val) => +val) } };
+			let ratingQuery = { rating: { $in: ratingFilter.map((val) => +val) } }; //[2,5]
 			query = {
 				...query,
 				...ratingQuery,
 			};
 		}
 	}
-	console.log("THE QUERY ", query);
 
 	Product.find(query)
 		.limit(limit)
@@ -51,8 +48,10 @@ exports.getAllProducts = async (req, res, next) => {
 			});
 		})
 		.catch((err) => console.log(err));
+// let products = await Product.find(query).limit(limit).skip(page * limit - limit).populate("category");
+// let count = await Product.find(query)
+// res.status(200).send({products:products, count:count.length})
 };
-
 exports.getProduct = (req, res) => {
 	Product.findById(req.body.id)
 		.populate("category")
@@ -70,7 +69,7 @@ exports.addProduct = (req, res, next) => {
 	// if ( req.role == "admin" ){
 	let images = [];
 	req.files.forEach((image) => images.push(image.filename));
-	console.log("=====>", req);
+	// console.log("=====>", req);
 	let product = new Product({
 		name: req.body.name,
 		sold: req.body.sold,
@@ -121,7 +120,7 @@ exports.deleteProduct = (req, res, next) => {
 
 			.then((data) => {
 				if (data == null) throw new Error("Product Is not Found!");
-				console.log(data.images[0]);
+				// console.log(data.images[0]);
 				data.images.forEach((image) => {
 					fs.unlinkSync(path.join(__dirname, "..//images//") + image);
 				});

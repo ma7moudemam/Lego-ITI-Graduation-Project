@@ -74,7 +74,7 @@ app.use(cors({ origin: true }));
 
 // calling multer and giving static path for images
 app.use("/images", express.static(path.join(__dirname, "images")));
-app.use(multer({ storage, limits, fileFilter }).single("images"));
+app.use(multer({ storage, limits, fileFilter }).array("images"));
 
 app.use(
 	express.json({
