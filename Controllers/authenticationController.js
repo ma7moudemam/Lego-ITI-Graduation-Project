@@ -5,22 +5,24 @@ const shipperModel = require("./../Models/shippersModel");
 const JWT = require("jsonwebtoken");
 const refreshTokens = require("./../refreshTokens");
 
-function createAccessToken(email, role) {
+function createAccessToken(email, role, user) {
 	let token = JWT.sign(
 		{
 			email: email,
 			role: role,
+			user: user,
 		},
 		process.env.SECRET_KEY,
 		{ expiresIn: "15m" }
 	);
 	return token;
 }
-function createRefreshToken(email, role) {
+function createRefreshToken(email, role, user) {
 	let token = JWT.sign(
 		{
 			email: email,
 			role: role,
+			user: user,
 		},
 		process.env.REFRESH_SECRET_KEY
 	);
@@ -30,8 +32,20 @@ function createRefreshToken(email, role) {
 exports.login = (request, response, next) => {
 	errorHandeler(request);
 	if (request.body.email == process.env.ADMIN_EMAIL && request.body.password == process.env.ADMIN_PASSWORD) {
-		let token = createAccessToken(request.body.email, "admin");
-		let refreshToken = createRefreshToken(request.body.email, "admin");
+		let token = JWT.sign(
+			{
+				email: request.body.email,
+				role: request.body.role,
+			},
+			process.env.SECRET_KEY
+		);
+		let refreshToken = JWT.sign(
+			{
+				email: request.body.email,
+				role: request.body.role,
+			},
+			process.env.REFRESH_SECRET_KEY
+		);
 		refreshTokens.push(refreshToken);
 		response.status(200).json({ message: "welcome admin", token, refreshToken });
 	} else {
@@ -46,10 +60,10 @@ exports.login = (request, response, next) => {
 								throw new Error("You are not in the system Go Out");
 							}
 							if (bcrypt.compareSync(request.body.password, data.password)) {
-								let token = createAccessToken(request.body.email, "shipper");
-								let refreshToken = createRefreshToken(request.body.email, "shipper");
+								let token = createAccessToken(request.body.email, "shipper", data);
+								let refreshToken = createRefreshToken(request.body.email, "shipper", data);
 								refreshTokens.push(refreshToken);
-								response.status(200).json({ message: "welcome Shipper", data, token, refreshToken });
+								response.status(200).json({ message: "welcome Shipper", token, refreshToken });
 							} else {
 								throw new Error("Email or Password is not Correct");
 							}
@@ -57,10 +71,10 @@ exports.login = (request, response, next) => {
 						.catch((error) => next(error));
 				}
 				if (bcrypt.compareSync(request.body.password, data.password)) {
-					let token = createAccessToken(request.body.email, "user");
-					let refreshToken = createRefreshToken(request.body.email, "user");
+					let token = createAccessToken(request.body.email, "user", data);
+					let refreshToken = createRefreshToken(request.body.email, "user", data);
 					refreshTokens.push(refreshToken);
-					response.status(200).json({ message: `Welcome user`, data, token, refreshToken });
+					response.status(200).json({ message: `You Logged in Successfully`, token, refreshToken });
 				} else throw new Error("Email or Password is not Correct");
 			})
 			.catch((error) => next(error));
