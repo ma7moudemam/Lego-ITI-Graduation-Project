@@ -34,6 +34,7 @@ exports.updateShipper = (request, response, next) => {
 		$set: {
 			name: req.body.name,
 			contact: req.body.contact,
+			password: req.body.password,
 		},
 	})
 		.then((data) => {

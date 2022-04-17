@@ -5,11 +5,14 @@ const AutoIncrement = require("mongoose-sequence")(mongoose);
 const schema = new mongoose.Schema(
 	{
 		_id: Number,
-		user: { type: String, ref: "user" },
+		user: { type: Number, required: true, ref: "user" },
 		shipper: { type: Number, ref: "shippers" },
-		order_status: Number,
+		isPending: { type: Boolean, required: true },
+		withShipper: { type: Boolean, required: true },
+		isShipped: { type: Boolean, required: true },
+		isDeliverd: { type: Boolean, required: true },
+		isCanceled: { type: Boolean, required: true },
 		tax: Number,
-		payment: { type: Number, ref: "payment" },
 		order_date: String,
 		product: [
 			{

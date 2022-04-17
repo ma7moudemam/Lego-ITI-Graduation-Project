@@ -111,6 +111,7 @@ exports.register = (request, response, next) => {
 						building: request.body.building,
 					},
 					wishlist: [],
+					blocked: false
 				});
 				console.log("inside register");
 				object

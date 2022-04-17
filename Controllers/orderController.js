@@ -32,10 +32,11 @@ exports.addOrder = (req, res, next) => {
 	errorHandeler(req);
 	let order = new Order({
 		user: req.body.email,
-		shipper: req.body.shipper,
-		order_status: req.body.order_status,
-		tax: req.body.tax,
-		payment: req.body.payment,
+		isPending: false,
+		withShipper: false,
+		isShipped: false,
+		isDeliverd: false,
+		isCanceled: false,
 		order_date: new Date().toLocaleDateString(),
 		product: req.body.product,
 	});
@@ -47,15 +48,14 @@ exports.addOrder = (req, res, next) => {
 
 exports.updateOrder = (request, response, next) => {
 	errorHandeler(request);
+
 	Order.findByIdAndUpdate(request.body.id, {
 		$set: {
-			user: request.body.email,
-			shipper: request.body.shipper,
-			order_status: request.body.order_status,
-			tax: request.body.tax,
-			payment: request.body.payment,
-			order_date: request.body.order_date,
-			product: request.body.product,
+			isPending: req.body.isPending,
+			withShipper: req.body.withShipper,
+			isShipped: req.body.isShipped,
+			isDeliverd: req.body.isDeliverd,
+			isCanceled: req.body.isCanceled,
 		},
 	})
 		.then((data) => {

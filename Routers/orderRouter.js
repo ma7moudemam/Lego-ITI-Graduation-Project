@@ -8,10 +8,6 @@ router
 	.post(
 		[
 			body("user").isString().withMessage("user is required"),
-			body("shipper").isInt().withMessage("shipper is required"),
-			body("order_status").isInt().withMessage("order_status is required"),
-			body("tax").isInt().withMessage("tax is required"),
-			body("payment").isInt().withMessage("payment is required"),
 			body("order_date").isString().withMessage("order_date is required"),
 			body("product").isArray().withMessage("product is required"),
 		],
