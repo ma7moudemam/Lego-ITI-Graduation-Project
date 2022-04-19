@@ -31,7 +31,7 @@ exports.getOrder = (req, res) => {
 exports.addOrder = (req, res, next) => {
 	errorHandeler(req);
 	let order = new Order({
-		user: req.body.email,
+		user: req.user._id,
 		isPending: false,
 		withShipper: false,
 		isShipped: false,
@@ -73,4 +73,19 @@ exports.deleteOrder = (request, response, next) => {
 			response.status(200).json({ message: "Deleted" });
 		})
 		.catch((err) => next(err));
+};
+
+exports.getUserOrder = (req, res) => {
+	errorHandeler(req);
+	Order.find({user: req.user._id})
+		.populate("user")
+		.populate("product.product")
+		.populate("shipper")
+		.then((data) => {
+			res.status(200).json(data);
+		})
+		.catch((error) => {
+			// next(error);
+			console.log(error)
+		});
 };

@@ -32,14 +32,14 @@ exports.updateWishlist = (req, res, next) => {
 exports.deleteFromWishlist = (req, res, next) => {
     // the user must be signed in
     if (req.role === "user") {
-        User.findOne({ email: req.email })
+        User.findOne({ email: req.user.email })
             .then(data => {
                 if (data == null) throw new Error("sign in first")
-                User.updateOne({ email: useremail }, {
+                User.updateOne({ email: req.user.email }, {
                     $pull: { wishlist: req.body.wishlist }
                 }).then(data => {
                     if (data == null) throw new Error(`we have no product like this`)
-                    if (data.modifiedCount) throw new Error("this product is already removed from your wishlist")
+                    // if (data.modifiedCount) throw new Error("this product is already removed from your wishlist")
                     res.status(200).json({ data: "removed from wishlist", wishlist: data })
                 })
             }).catch(err => next(err))
