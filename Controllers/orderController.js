@@ -31,7 +31,7 @@ exports.getOrder = (req, res) => {
 exports.addOrder = (req, res, next) => {
 	errorHandeler(req);
 	let order = new Order({
-		user: req.body.email,
+		user: req.user._id,
 		isPending: false,
 		withShipper: false,
 		isShipped: false,

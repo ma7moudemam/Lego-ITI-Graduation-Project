@@ -13,7 +13,7 @@ function createAccessToken(email, role, user) {
 			user: user,
 		},
 		process.env.SECRET_KEY,
-		{ expiresIn: "15m" }
+		{ expiresIn: "6h" }
 	);
 	return token;
 }
