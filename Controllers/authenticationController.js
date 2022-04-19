@@ -104,6 +104,9 @@ exports.register = (request, response, next) => {
 					userName: request.body.signup_username,
 					password: hashedPassword,
 					age: getAge(),
+					day: request.body.day,
+					month: request.body.month,
+					year: request.body.year,
 					country: request.body.country,
 					address: {
 						city: request.body.city,

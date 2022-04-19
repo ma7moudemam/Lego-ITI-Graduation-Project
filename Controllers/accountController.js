@@ -1,6 +1,7 @@
 const errorHandeler = require("./errorHandeler.js");
 const UserModel = require("./../Models/userModel");
 const bcrypt = require("bcrypt");
+const JWT = require("jsonwebtoken");
 
 exports.postUser = (req, res, next) => {
 	errorHandeler(req);
@@ -89,8 +90,17 @@ exports.updateProfile = (req, res, next) => {
 				return user.save();
 			})
 			.then((data) => {
+				console.log(data);
+				let token = JWT.sign(
+					{
+						email: data.email,
+						role: "user",
+						user: data,
+					},
+					process.env.SECRET_KEY
+				);
 				console.log("sec then ");
-				res.status(201).json({ data });
+				res.status(201).json({ message: "Your data has been updated successfully", token });
 			})
 			.catch((e) => {
 				console.log(e);
