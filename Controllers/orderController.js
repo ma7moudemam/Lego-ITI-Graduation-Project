@@ -74,3 +74,18 @@ exports.deleteOrder = (request, response, next) => {
 		})
 		.catch((err) => next(err));
 };
+
+exports.getUserOrder = (req, res) => {
+	errorHandeler(req);
+	Order.find({user: req.user._id})
+		.populate("user")
+		.populate("product.product")
+		.populate("shipper")
+		.then((data) => {
+			res.status(200).json(data);
+		})
+		.catch((error) => {
+			// next(error);
+			console.log(error)
+		});
+};
