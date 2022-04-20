@@ -50,7 +50,7 @@ exports.getAllProducts = (req, res, next) => {
 exports.addProduct = (req, res, next) => {
     errHandler(req);
     // should add new product
-    console.log(req.files)
+
     let imagesNames = [];
 
     for (let i = 0; i < req.files.length; i++) {
@@ -58,25 +58,34 @@ exports.addProduct = (req, res, next) => {
         imagesNames.push(new Date().toLocaleDateString().replace(/\//g, "-") + "-" + req.files[i].originalname)
     }
 
-    if (req.role = "admin") {
-        let newProduct = new Product({
-            name: req.body.productName,
-            images: imagesNames,
-            price: req.body.price,
-            amount: req.body.amount,
-            sold: 0,
-            rating: req.body.rating,
-            category: req.body.category
+    // if (req.role = "admin") {
+    Product.find({ name: req.body.productName })
+        .then(data => {
+            if (data.length === 0) {
+                let newProduct = new Product({
+                    name: req.body.productName,
+                    images: imagesNames,
+                    price: req.body.price,
+                    amount: req.body.amount,
+                    sold: 0,
+                    rating: req.body.rating,
+                    category: req.body.category
+                })
+
+                newProduct.save()
+                    .then(data => {
+                        if (data == null) throw new Error("we didn't add the product")
+                        res.status(201).json({ message: "Product has been added", data })
+                    }).catch(err => next(err))
+            } else {
+
+                res.status(406).json({ message: "You can't add 2 products with the same name" })
+            }
         })
 
-        newProduct.save()
-            .then(data => {
-                if (data == null) throw new Error("we didn't add the product")
-                res.status(201).json({ message: "Product has been added", data })
-            }).catch(err => next(err))
-    } else {
-        throw new Error("u r not authorized to add product")
-    }
+    // } else {
+    //     throw new Error("u r not authorized to add product")
+    // }
 }
 
 exports.updateProduct = (req, res, next) => {
@@ -184,7 +193,7 @@ exports.getAllOrders = (req, res, next) => {
     console.log("before")
     Orders.find({}).sort({ _id: -1 })
         .populate("user")
-        .populate("product")
+        .populate("products.product")
         .then(data => {
             console.log("then")
             if (data == null) throw new Error("something went wrong while getting orders")
@@ -194,18 +203,18 @@ exports.getAllOrders = (req, res, next) => {
 }
 exports.updateOrder = (req, res, next) => {
     // should get all orders
-    if (req.role === "admin") {
-        Orders.updateOne({ _id: req.body.id }, {
-            $set: {
-                shipper: req.body.shipper,
-                isPending: true
-            }
+    // if (req.role === "admin") {
+    Orders.updateOne({ _id: req.body.id }, {
+        $set: {
+            shipper: req.body.shipper,
+            isPending: true
+        }
+    })
+        .then(data => {
+            if (data == null) throw new Error("something went wrong while getting orders")
+            res.status(200).json({ data: "orders is here", orders: data })
         })
-            .then(data => {
-                if (data == null) throw new Error("something went wrong while getting orders")
-                res.json(200).json({ data: "orders is here", orders: data })
-            })
-    }
+    // }
 }
 
 
@@ -346,33 +355,32 @@ exports.deleteCategory = (req, res, next) => {
 
 /************** shipper *********** */
 exports.getAllShippers = (req, res, next) => {
-    if (req.role === "admin") {
+    // if (req.role === "admin") {
 
-        Shipper.find({})
-            .then(data => {
-                if (data == null) throw new Error("something went wrong while getting shippers")
-                res.status(200).json({ data: "your category is here", body: data })
-            }).catch(err => next(err))
-    }
+    Shipper.find({})
+        .then(data => {
+            if (data == null) throw new Error("something went wrong while getting shippers")
+            res.status(200).json({ data: "your shippers is here", shippers: data })
+        }).catch(err => next(err))
+    // }
 }
 exports.addNewShipper = (req, res, next) => {
     errHandler(req);
-    if (req.role === "admin") {
+    // if (req.role === "admin") {
 
-        let newShipper = new Shipper({
-            name: req.body.shipperName,
-            password: `${req.body.name}@lego`,
-            contact: {
-                email: req.body.shipperEmail,
-                phone_number: req.body.phoneNumber,
-            },
+    let newShipper = new Shipper({
+        name: req.body.shipperName,
+        password: `${req.body.shipperName}@lego`,
+        email: req.body.shipperEmail,
+        phone_number: req.body.phoneNumber,
+
+    })
+    newShipper.save()
+        .then(data => {
+            if (data == null) throw new Error("we didn't add the item to the shippers")
+            res.status(201).json({ message: "shipper added", data })
         })
-        newShipper.save()
-            .then(data => {
-                if (data == null) throw new Error("we didn't add the item to the shippers")
-                res.status(201).json({ message: "added", data })
-            })
-    }
+    // }
 }
 exports.updateShipper = (req, res, next) => {
     if (req.role === "admin") {
@@ -399,11 +407,11 @@ exports.updateShipper = (req, res, next) => {
     }
 }
 exports.deleteShipper = (req, res, next) => {
-    if (req.role === "admin") {
-        Shipper.deleteOne({ _id: req.body.id })
-            .then(data => {
-                if (data == null) throw new Error("something went wrong while deleting the Shipper")
-                res.status(200).json({ data: "Shipper has been deleted", body: data })
-            }).catch(err => next(err))
-    }
+    // if (req.role === "admin") {
+    Shipper.deleteOne({ _id: req.body.id })
+        .then(data => {
+            if (data == null) throw new Error("something went wrong while deleting the Shipper")
+            res.status(200).json({ data: "Shipper has been deleted", body: data })
+        }).catch(err => next(err))
+    // }
 }

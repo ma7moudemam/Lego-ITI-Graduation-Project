@@ -31,14 +31,14 @@ exports.getOrder = (req, res) => {
 exports.addOrder = (req, res, next) => {
 	errorHandeler(req);
 	let order = new Order({
-		user: req.body.email,
+		user: req.body.user,
 		isPending: false,
 		withShipper: false,
 		isShipped: false,
 		isDeliverd: false,
 		isCanceled: false,
 		order_date: new Date().toLocaleDateString(),
-		product: req.body.product,
+		products: req.body.products,
 	});
 	order
 		.save()

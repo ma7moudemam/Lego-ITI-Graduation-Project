@@ -7,9 +7,8 @@ router
 	.route("/order")
 	.post(
 		[
-			body("user").isString().withMessage("user is required"),
-			body("order_date").isString().withMessage("order_date is required"),
-			body("product").isArray().withMessage("product is required"),
+			body("user").isInt().withMessage("user is required"),
+			body("products").isArray().withMessage("product is required"),
 		],
 		controller.addOrder
 	)

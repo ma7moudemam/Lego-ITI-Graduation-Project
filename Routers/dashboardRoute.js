@@ -34,7 +34,8 @@ dashboardRouter.route("/dashboard/blacklist")
 
 //orders
 dashboardRouter.route("/dashboard/orders")
-    .get(controller.getAllOrders);
+    .get(controller.getAllOrders)
+    .put(controller.updateOrder);
 //reviews
 dashboardRouter.route("/dashboard/reviews")
     .get(isAuth, controller.getAllReviews)
@@ -57,14 +58,14 @@ dashboardRouter.route("/dashboard/category")
     .put(controller.updateCategory)
     .delete(controller.deleteCategory);
 
-dashboardRouter.route("/dashboard/shipper")
-    .get(isAuth, controller.getAllShippers)
-    .post(isAuth, [
+dashboardRouter.route("/dashboard/shippers")
+    .get(controller.getAllShippers)
+    .post([
         body("shipperName").isString().withMessage("shippername must be text"),
-        body("contact.email").isEmail().withMessage("you should enter valid email"),
-        body("contact.phoneNumber").isInt().withMessage("phone number is not valid")
+        body("shipperEmail").isEmail().withMessage("you should enter valid email"),
+        body("phoneNumber").isString().withMessage("phone number is not valid")
     ], controller.addNewShipper)
-    .put(isAuth, controller.updateShipper)
-    .delete(isAuth, controller.deleteShipper);
+    .put(controller.updateShipper)
+    .delete(controller.deleteShipper);
 
 module.exports = dashboardRouter;

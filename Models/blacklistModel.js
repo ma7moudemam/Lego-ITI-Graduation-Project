@@ -4,7 +4,10 @@ const AutoIncrement = require("mongoose-sequence")(mongoose);
 const blacklistSchema = new mongoose.Schema(
 	{
 		_id: Number,
-		user: { type: String, unique: true, required: true, ref: "user" },
+		user: {
+			type: String, unique: true, ref: "user", required: true
+		},
+
 	},
 	{ _id: false }
 );

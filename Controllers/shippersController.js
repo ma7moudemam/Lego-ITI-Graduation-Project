@@ -21,6 +21,8 @@ exports.getShipper = (req, res) => {
 exports.setShipper = (req, res, next) => {
 	let shipper = new Shipper({
 		name: req.body.name,
+		email: req.body.email,
+		password: req.body.password,
 		contact: req.body.contact,
 	});
 	shipper

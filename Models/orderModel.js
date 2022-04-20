@@ -7,14 +7,15 @@ const schema = new mongoose.Schema(
 		_id: Number,
 		user: { type: Number, required: true, ref: "user" },
 		shipper: { type: Number, ref: "shippers" },
-		isPending: { type: Boolean, required: true },
-		withShipper: { type: Boolean, required: true },
-		isShipped: { type: Boolean, required: true },
-		isDeliverd: { type: Boolean, required: true },
-		isCanceled: { type: Boolean, required: true },
+		isPending: { type: Boolean },
+		withShipper: { type: Boolean },
+		isShipped: { type: Boolean },
+		isDelivered: { type: Boolean },
+		isCanceled: { type: Boolean },
 		tax: Number,
 		order_date: String,
-		product: [
+		total_price: String,
+		products: [
 			{
 				product: { type: Number, ref: "product" },
 				quantity: Number,
