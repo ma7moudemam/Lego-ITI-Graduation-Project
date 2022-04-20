@@ -10,4 +10,6 @@ wishListRouter.route("/wishlist")
     .put(isAuth, controller.updateWishlist)
     .delete(isAuth, controller.deleteFromWishlist);
 
+wishListRouter.route('/deleteFromWishlist').put(isAuth, controller.deleteFromWishlist)
+
 module.exports = wishListRouter;

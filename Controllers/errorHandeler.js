@@ -4,7 +4,7 @@ module.exports = function (request) {
 	let error = new Error();
 	if (!errors.isEmpty()) {
 		error.status = 422;
-		error.message = errors.array().reduce((current, object) => current + object.msg + " ", "");
+		error.message = errors.errors.reduce((current, object) => current + object.msg + " ", "");
 		throw error;
 	}
 };
