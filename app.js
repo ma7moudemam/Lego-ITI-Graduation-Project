@@ -33,7 +33,12 @@ const storage = multer.diskStorage({
 });
 const limits = { fileSize: 838861 };
 const fileFilter = (request, file, callback) => {
-	if (file.mimetype == "image/jpeg" || file.mimetype == "image/jpg" || file.mimetype == "image/png")
+	if (
+		file.mimetype == "image/webp" ||
+		file.mimetype == "image/jpeg" ||
+		file.mimetype == "image/jpg" ||
+		file.mimetype == "image/png"
+	)
 		callback(null, true);
 };
 

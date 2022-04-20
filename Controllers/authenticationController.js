@@ -63,7 +63,7 @@ exports.login = (request, response, next) => {
 								let token = createAccessToken(request.body.email, "shipper", data);
 								let refreshToken = createRefreshToken(request.body.email, "shipper", data);
 								refreshTokens.push(refreshToken);
-								response.status(200).json({ message: "welcome Shipper", token, refreshToken });
+								return response.status(200).json({ message: "welcome Shipper", token, refreshToken });
 							} else {
 								throw new Error("Email or Password is not Correct");
 							}
@@ -114,7 +114,7 @@ exports.register = (request, response, next) => {
 						building: request.body.building,
 					},
 					wishlist: [],
-					blocked: false
+					blocked: false,
 				});
 				console.log("inside register");
 				object
