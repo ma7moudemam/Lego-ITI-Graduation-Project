@@ -31,18 +31,21 @@ function createRefreshToken(email, role, user) {
 
 exports.login = (request, response, next) => {
 	errorHandeler(request);
-	if (request.body.email == process.env.ADMIN_EMAIL && request.body.password == process.env.ADMIN_PASSWORD) {
+	if (request.body.email == "admin@lego.com" && request.body.password == "admin123") {
 		let token = JWT.sign(
 			{
 				email: request.body.email,
-				role: request.body.role,
+				role: "admin",
+				user: {
+					userName: "Admin",
+				},
 			},
 			process.env.SECRET_KEY
 		);
 		let refreshToken = JWT.sign(
 			{
 				email: request.body.email,
-				role: request.body.role,
+				role: "admin",
 			},
 			process.env.REFRESH_SECRET_KEY
 		);

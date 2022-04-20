@@ -2,13 +2,14 @@ const stripeAPI = require("./../stripe");
 
 async function createCheckoutSession(request, response) {
 	const domainUrl = process.env.WEB_APP_URL;
-	const { line_items, customer_email } = request.body;
+	const { line_items, customer_email, totalPrice } = request.body;
 	console.log(line_items, customer_email);
 	if (!line_items || !customer_email) {
 		return response.status(400).json({ error: "missing required session parameters" });
 	}
 	let session;
 	try {
+		const shippingCost = totalPrice > 1000 ? 0 : 3000;
 		session = await stripeAPI.checkout.sessions.create({
 			payment_method_types: ["card"],
 			mode: "payment",

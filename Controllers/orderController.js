@@ -38,7 +38,9 @@ exports.addOrder = (req, res, next) => {
 		isDeliverd: false,
 		isCanceled: false,
 		order_date: new Date().toLocaleDateString(),
+		total_price: req.body.total_price,
 		products: req.body.products,
+		session_id: req.body.session_id,
 	});
 	order
 		.save()
@@ -86,6 +88,6 @@ exports.getUserOrder = (req, res) => {
 		})
 		.catch((error) => {
 			// next(error);
-			console.log(error)
+			console.log(error);
 		});
 };
