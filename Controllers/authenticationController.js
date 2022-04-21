@@ -105,7 +105,7 @@ exports.register = (request, response, next) => {
 				let object = new userModel({
 					email: request.body.signup_email,
 					password: hashedPassword,
-					userName: request.body.userName,
+					userName: request.body.signup_username,
 					age: getAge(),
 					day: request.body.day,
 					month: request.body.month,
