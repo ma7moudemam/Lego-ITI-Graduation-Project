@@ -15,7 +15,6 @@ const wishlistRouter = require("./Routers/wishListRoute");
 const orderRouter = require("./Routers/orderRouter");
 const shopRouter = require("./Routers/shopRouter");
 const cartRouter = require("./Routers/cartRouter");
-const blacklistRouter = require("./Routers/blacklistRouter");
 const createCheckoutSession = require("./api/checkout");
 const webhook = require("./api/weebhook");
 const jwt = require("jsonwebtoken");
@@ -97,7 +96,6 @@ app.use(shopRouter);
 app.use(cartRouter);
 app.use(dashboardRouter);
 app.use(wishlistRouter);
-app.use(blacklistRouter);
 app.post("/create-checkout-session", createCheckoutSession);
 app.post("/webhook", webhook);
 app.post("/logout", (request, response) => {

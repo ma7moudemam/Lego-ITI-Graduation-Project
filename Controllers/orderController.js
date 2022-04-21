@@ -81,7 +81,7 @@ exports.getUserOrder = (req, res) => {
 	errorHandeler(req);
 	Order.find({ user: req.user._id })
 		.populate("user")
-		.populate("product.product")
+		.populate("products.product")
 		.populate("shipper")
 		.then((data) => {
 			res.status(200).json(data);
