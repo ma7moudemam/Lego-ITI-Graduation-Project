@@ -15,7 +15,6 @@ const wishlistRouter = require("./Routers/wishListRoute");
 const orderRouter = require("./Routers/orderRouter");
 const shopRouter = require("./Routers/shopRouter");
 const cartRouter = require("./Routers/cartRouter");
-const blacklistRouter = require("./Routers/blacklistRouter");
 const createCheckoutSession = require("./api/checkout");
 const webhook = require("./api/weebhook");
 const jwt = require("jsonwebtoken");
@@ -33,7 +32,12 @@ const storage = multer.diskStorage({
 });
 const limits = { fileSize: 838861 };
 const fileFilter = (request, file, callback) => {
-	if (file.mimetype == "image/jpeg" || file.mimetype == "image/jpg" || file.mimetype == "image/png")
+	if (
+		file.mimetype == "image/webp" ||
+		file.mimetype == "image/jpeg" ||
+		file.mimetype == "image/jpg" ||
+		file.mimetype == "image/png"
+	)
 		callback(null, true);
 };
 
@@ -92,7 +96,6 @@ app.use(shopRouter);
 app.use(cartRouter);
 app.use(dashboardRouter);
 app.use(wishlistRouter);
-app.use(blacklistRouter);
 app.post("/create-checkout-session", createCheckoutSession);
 app.post("/webhook", webhook);
 app.post("/logout", (request, response) => {

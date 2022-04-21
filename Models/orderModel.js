@@ -12,7 +12,6 @@ const schema = new mongoose.Schema(
 		isShipped: { type: Boolean },
 		isDelivered: { type: Boolean },
 		isCanceled: { type: Boolean },
-		tax: Number,
 		order_date: String,
 		total_price: String,
 		products: [

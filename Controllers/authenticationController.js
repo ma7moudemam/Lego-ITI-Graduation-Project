@@ -31,18 +31,21 @@ function createRefreshToken(email, role, user) {
 
 exports.login = (request, response, next) => {
 	errorHandeler(request);
-	if (request.body.email == process.env.ADMIN_EMAIL && request.body.password == process.env.ADMIN_PASSWORD) {
+	if (request.body.email == "admin@lego.com" && request.body.password == "admin123") {
 		let token = JWT.sign(
 			{
 				email: request.body.email,
-				role: request.body.role,
+				role: "admin",
+				user: {
+					userName: "Admin",
+				},
 			},
 			process.env.SECRET_KEY
 		);
 		let refreshToken = JWT.sign(
 			{
 				email: request.body.email,
-				role: request.body.role,
+				role: "admin",
 			},
 			process.env.REFRESH_SECRET_KEY
 		);
@@ -63,7 +66,7 @@ exports.login = (request, response, next) => {
 								let token = createAccessToken(request.body.email, "shipper", data);
 								let refreshToken = createRefreshToken(request.body.email, "shipper", data);
 								refreshTokens.push(refreshToken);
-								response.status(200).json({ message: "welcome Shipper", token, refreshToken });
+								return response.status(200).json({ message: "welcome Shipper", token, refreshToken });
 							} else {
 								throw new Error("Email or Password is not Correct");
 							}
@@ -114,7 +117,7 @@ exports.register = (request, response, next) => {
 						building: request.body.building,
 					},
 					wishlist: [],
-					blocked: false
+					blocked: false,
 				});
 				console.log("inside register");
 				object

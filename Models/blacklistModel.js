@@ -5,9 +5,11 @@ const blacklistSchema = new mongoose.Schema(
 	{
 		_id: Number,
 		user: {
-			type: String, unique: true, ref: "user", required: true
+			type: Number,
+			unique: true,
+			ref: "user",
+			required: true,
 		},
-
 	},
 	{ _id: false }
 );

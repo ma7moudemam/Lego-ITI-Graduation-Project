@@ -1,4 +1,4 @@
-const errorHandeler = require("./errorHandeler.js");
+const errorHandeler = require("./errorHandeler");
 const UserModel = require("./../Models/userModel");
 const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
@@ -113,15 +113,16 @@ exports.updateProfile = (req, res, next) => {
 
 // Change Password
 exports.changePassword = (req, res, next) => {
-	console.log(req.body);
-
 	if (req.role === "user") {
-		UserModel.findById(req.user._id)
+		UserModel.findOne({ email: req.user.email })
 			.then((user) => {
-				const hashedPassword = bcrypt.hashSync(req.body.password, 15);
-				user["password"] = hashedPassword;
-
-				return user.save();
+				console.log(user);
+				if (bcrypt.compareSync(req.body.oldPassword, user.password)) {
+					console.log("in");
+					const hashedPassword = bcrypt.hashSync(req.body.newPassword, 15);
+					user["password"] = hashedPassword;
+					return user.save();
+				} else throw new Error("Wrong Password");
 			})
 			.then((data) => {
 				console.log("sec then ");
