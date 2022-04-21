@@ -12,7 +12,7 @@ const schema = new mongoose.Schema(
 		isShipped: { type: Boolean },
 		isDelivered: { type: Boolean },
 		isCanceled: { type: Boolean },
-		order_date: String,
+		order_date: Date,
 		total_price: String,
 		products: [
 			{
