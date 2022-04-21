@@ -13,13 +13,18 @@ exports.getAllOrders = (req, res, next) => {
 		.catch((err) => next(err));
 };
 
-exports.getOrder = (req, res) => {
+exports.getOrder = (req, res, next) => {
 	errorHandeler(req);
-	Order.findById(req.body.id)
+	console.log(req.body)
+	Order.find({
+		order_date: {
+			$gte: req.body.date.start,
+			$lt: req.body.date.end
+		}
+	})
 		.populate("user")
-		.populate("produst")
-		.populate("shippers")
-		.populate("payment")
+		.populate("products")
+
 		.then((data) => {
 			res.status(200).json(data);
 		})
@@ -37,7 +42,9 @@ exports.addOrder = (req, res, next) => {
 		isShipped: false,
 		isDeliverd: false,
 		isCanceled: false,
-		order_date: new Date().toLocaleDateString(),
+		total_price: req.body.total_price,
+		// order_date: new Date().toLocaleDateString(),
+		order_date: req.body.date,
 		products: req.body.products,
 	});
 	order
@@ -79,7 +86,7 @@ exports.getUserOrder = (req, res) => {
 	errorHandeler(req);
 	Order.find({ user: req.user._id })
 		.populate("user")
-		.populate("product.product")
+		.populate("products.product")
 		.populate("shipper")
 		.then((data) => {
 			res.status(200).json(data);

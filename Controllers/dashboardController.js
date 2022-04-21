@@ -190,17 +190,50 @@ exports.unBlockUser = (req, res, next) => {
 exports.getAllOrders = (req, res, next) => {
     // should get all orders
     // if (req.role === "admin") {
-    console.log("before")
     Orders.find({}).sort({ _id: -1 })
         .populate("user")
         .populate("products.product")
         .then(data => {
-            console.log("then")
             if (data == null) throw new Error("something went wrong while getting orders")
             res.status(200).json({ data: "orders is here", orders: data })
-        })
+        }).catch(err => next(err))
     // }
 }
+
+exports.getRecentOrders = (re, res, next) => {
+    Orders.find({}).sort({ _id: -1 }).limit(5)
+        .populate("user")
+        .populate("products.product")
+        .then(data => {
+            if (data == null) throw new Error("something went wrong while getting orders")
+            res.status(200).json({ data: "orders is here", orders: data })
+        }).catch(err => console.log(err))
+}
+exports.getOrderByDate = (req, res, next) => {
+
+    let date = req.body.date.end.split("/")
+    date.splice(1, 1, Number(date[1]) + 1)
+    let endDate = date.join('/')
+
+    console.log(endDate)
+    console.log(req.body)
+
+    Orders.find({
+        order_date: {
+            $gte: req.body.date.start,
+            $lt: endDate
+        }
+    })
+        .populate("user")
+        .populate("products")
+
+        .then((data) => {
+            res.status(200).json({ message: `Your orders from ${req.body.date.start} to ${req.body.date.end}`, orders: data });
+        })
+        .catch((error) => {
+            next(error);
+        });
+};
 exports.updateOrder = (req, res, next) => {
     // should get all orders
     // if (req.role === "admin") {

@@ -36,6 +36,8 @@ dashboardRouter.route("/dashboard/blacklist")
 dashboardRouter.route("/dashboard/orders")
     .get(controller.getAllOrders)
     .put(controller.updateOrder);
+dashboardRouter.route("/dashboard/order").post(controller.getOrderByDate)
+dashboardRouter.route("/dashboard/recentOrders").get(controller.getRecentOrders)
 //reviews
 dashboardRouter.route("/dashboard/reviews")
     .get(isAuth, controller.getAllReviews)
