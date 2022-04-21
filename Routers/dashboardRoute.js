@@ -25,7 +25,7 @@ dashboardRouter.route("/dashboard/products")
 // users
 dashboardRouter.route("/dashboard/users")
     .get(controller.getAllUsers)
-    .post([body("email").isEmail().withMessage("email is a must")], controller.sendUserToBlacklist)
+    .post([body("user").isInt().withMessage("user id is a must")], controller.sendUserToBlacklist)
     .put(controller.blockUser)
     .delete(controller.unBlockUser);
 

@@ -148,12 +148,12 @@ exports.getBlockedUsers = (req, res, next) => {
 exports.sendUserToBlacklist = (req, res, next) => {
     // should get all users
     // if (req.role === "admin") {
-    Users.findOne({ email: req.body.email })
+    Users.findOne({ _id: req.body.id })
         .then(data => {
-            if (data == null) throw new Error("we have no user with such email")
+            if (data == null) throw new Error("we have no user with such id")
             // add the use into the blacklist collection
             let addToBlacklist = new Blacklist({
-                user: data.email
+                user: data.id
             })
 
             addToBlacklist.save()
@@ -226,7 +226,6 @@ exports.getOrderByDate = (req, res, next) => {
     })
         .populate("user")
         .populate("products")
-
         .then((data) => {
             res.status(200).json({ message: `Your orders from ${req.body.date.start} to ${req.body.date.end}`, orders: data });
         })

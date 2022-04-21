@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+.env
 /.pnp
 .pnp.js
 /images
@@ -23,3 +24,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.env
