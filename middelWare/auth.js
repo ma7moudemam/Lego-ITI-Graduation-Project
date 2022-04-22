@@ -20,6 +20,7 @@ const auth = async (req, res, next) => {
 				res.status(401).send({ error: "Please authenticate" });
 			}
 		} else if (decoded.role == ("admin" || "shipper")) {
+
 			req.email = decoded.email;
 			req.role = decoded.role;
 			next();

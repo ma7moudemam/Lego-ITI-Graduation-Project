@@ -15,6 +15,7 @@ const wishlistRouter = require("./Routers/wishListRoute");
 const orderRouter = require("./Routers/orderRouter");
 const shopRouter = require("./Routers/shopRouter");
 const cartRouter = require("./Routers/cartRouter");
+const shipperRouter = require("./Routers/shippersRouter");
 const createCheckoutSession = require("./api/checkout");
 const webhook = require("./api/weebhook");
 const jwt = require("jsonwebtoken");
@@ -96,6 +97,7 @@ app.use(shopRouter);
 app.use(cartRouter);
 app.use(dashboardRouter);
 app.use(wishlistRouter);
+app.use(shipperRouter);
 app.post("/create-checkout-session", createCheckoutSession);
 app.post("/webhook", webhook);
 app.post("/logout", (request, response) => {
@@ -119,6 +121,7 @@ app.post("/refresh", (request, response) => {
 		response.status(200).json({ token: newAccessToken, refreshToken: newRefreshToken });
 	});
 });
+
 ////////
 
 // Not Found MW

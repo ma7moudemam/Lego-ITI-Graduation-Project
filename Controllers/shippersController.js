@@ -8,8 +8,8 @@ exports.getAllShippers = (req, res, next) => {
 		.catch((err) => next(err));
 };
 
-exports.getShipper = (req, res) => {
-	Shipper.findById(req.body.id)
+exports.getShipper = (req, res, next) => {
+	Shipper.findOne({ email: req.body.email })
 		.then((data) => {
 			res.status(200).json(data);
 		})

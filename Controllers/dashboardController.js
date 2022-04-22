@@ -7,6 +7,7 @@ const Category = require("./../Models/categoryModel");
 const Shipper = require("./../Models/shippersModel");
 const Blacklist = require("./../Models/blacklistModel");
 const errHandler = require("./../Controllers/errorHandeler");
+const bcrypt = require("bcrypt");
 
 
 exports.statistics = (req, res, next) => {
@@ -404,10 +405,12 @@ exports.getAllShippers = (req, res, next) => {
 exports.addNewShipper = (req, res, next) => {
     errHandler(req);
     if (req.role === "admin") {
+        let hashedPassword = bcrypt.hashSync(`${req.body.shipperName}@lego`, 15);
 
         let newShipper = new Shipper({
             name: req.body.shipperName,
-            password: `${req.body.shipperName}@lego`,
+            userName: req.body.shipperName,
+            password: hashedPassword,
             email: req.body.shipperEmail,
             phone_number: req.body.phoneNumber,
 

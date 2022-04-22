@@ -59,21 +59,24 @@ exports.login = (request, response, next) => {
 					shipperModel
 						.findOne({ email: request.body.email })
 						.then((data) => {
+							// console.log(data)
 							if (data == null) {
 								throw new Error("You are not in the system Go Out");
 							}
 							if (bcrypt.compareSync(request.body.password, data.password)) {
 								let token = createAccessToken(request.body.email, "shipper", data);
+								console.log("token")
 								let refreshToken = createRefreshToken(request.body.email, "shipper", data);
+								console.log("refresh")
 								refreshTokens.push(refreshToken);
-								return response.status(200).json({ message: "welcome Shipper", token, refreshToken });
+								console.log("response")
+								response.status(200).json({ message: "welcome Shipper", token, refreshToken });
 							} else {
 								throw new Error("Email or Password is not Correct");
 							}
 						})
 						.catch((error) => next(error));
-				}
-				if (bcrypt.compareSync(request.body.password, data.password)) {
+				} else if (bcrypt.compareSync(request.body.password, data.password)) {
 					let token = createAccessToken(request.body.email, "user", data);
 					let refreshToken = createRefreshToken(request.body.email, "user", data);
 					refreshTokens.push(refreshToken);
