@@ -9,12 +9,15 @@ router
 	.post(controller.addOrder)
 	.get(controller.getOrder)
 	// .get(controller.getAllOrders)
-	.put(controller.updateOrder)
+
 	.delete(controller.deleteOrder);
 
 router.route("/orders/")
 	.get(controller.getOrder);
 router.route("/userOrder")
-	.get(isAuth, controller.getUserOrder);
+	.get(isAuth, controller.getUserOrder)
+	.post(controller.updateOrder);
+
+router.route("/shipper/orders").post(controller.findShippersOrders);
 
 module.exports = router;

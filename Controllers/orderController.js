@@ -13,6 +13,16 @@ exports.getAllOrders = (req, res, next) => {
 		.catch((err) => next(err));
 };
 
+exports.findShippersOrders = (req, res, next) => {
+	Order.find({ shipper: req.body.id })
+		.populate("user")
+		.populate("products")
+		.then(data => {
+			if (data.length === 0) throw new Error("you don't have orders")
+			res.status(200).json({ message: "You have orders to deliver", orders: data })
+		}).catch(err => next(err))
+}
+
 exports.getOrder = (req, res, next) => {
 	errorHandeler(req);
 	console.log(req.body)
@@ -55,21 +65,19 @@ exports.addOrder = (req, res, next) => {
 };
 
 exports.updateOrder = (request, response, next) => {
-	errorHandeler(request);
+	// errorHandeler(request);
+	console.log(request.body)
+	Order.findById(request.body.id).then((data) => {
+		if (data == null) throw new Error("Order is not Find");
+		data["isDelivered"] = request.body.isDelivered
+		data["isPending"] = request.body.isPending
+		data["isShipped"] = request.body.isShipped
+		// response.status(201).json({ message: "Updated", data });
+		return data.save();
+	}).then(data => {
+		response.status(201).json({ message: "Updated", data });
 
-	Order.findByIdAndUpdate(request.body.id, {
-		$set: {
-			isPending: req.body.isPending,
-			withShipper: req.body.withShipper,
-			isShipped: req.body.isShipped,
-			isDeliverd: req.body.isDeliverd,
-			isCanceled: req.body.isCanceled,
-		},
 	})
-		.then((data) => {
-			if (data == null) throw new Error("Order is not Find");
-			response.status(200).json({ message: "Updated" }, data);
-		})
 		.catch((err) => next(err));
 };
 
