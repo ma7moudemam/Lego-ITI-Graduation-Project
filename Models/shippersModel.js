@@ -5,8 +5,8 @@ const AutoIncrement = require("mongoose-sequence")(mongoose);
 const shippersSchema = new Schema(
 	{
 		_id: Number,
-		name: { type: String, required: true },
-		email: { type: String, required: true },
+		name: { type: String, required: true, unique: true },
+		email: { type: String, required: true, unique: true },
 		password: { type: String, required: true },
 		phone_number: { type: Number, required: true },
 	},

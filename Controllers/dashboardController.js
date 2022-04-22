@@ -405,21 +405,28 @@ exports.getAllShippers = (req, res, next) => {
 exports.addNewShipper = (req, res, next) => {
     errHandler(req);
     if (req.role === "admin") {
-        let hashedPassword = bcrypt.hashSync(`${req.body.shipperName}@lego`, 15);
+        Shipper.findOne({ email: req.body.shipperEmail }).then(data => {
+            if (data === null) {
+                let hashedPassword = bcrypt.hashSync(`${req.body.shipperName}@lego`, 15);
 
-        let newShipper = new Shipper({
-            name: req.body.shipperName,
-            userName: req.body.shipperName,
-            password: hashedPassword,
-            email: req.body.shipperEmail,
-            phone_number: req.body.phoneNumber,
+                let newShipper = new Shipper({
+                    name: req.body.shipperName,
+                    userName: req.body.shipperName,
+                    password: hashedPassword,
+                    email: req.body.shipperEmail,
+                    phone_number: req.body.phoneNumber,
 
-        })
-        newShipper.save()
-            .then(data => {
-                if (data == null) throw new Error("we didn't add the item to the shippers")
-                res.status(201).json({ message: "shipper added", data })
-            })
+                })
+                newShipper.save()
+                    .then(data => {
+                        if (data == null) throw new Error("we didn't add the item to the shippers")
+                        res.status(201).json({ message: "shipper added", data })
+                    })
+            } else {
+                res.status(406).json({ message: " You can't sign up 2 shippers with same email or name" })
+            }
+        }).catch(err => next(err))
+
     }
 }
 exports.updateShipper = (req, res, next) => {
