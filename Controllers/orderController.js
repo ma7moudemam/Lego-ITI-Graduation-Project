@@ -4,7 +4,7 @@ exports.getAllOrders = (req, res, next) => {
 	errorHandeler(req);
 	Order.find({})
 		.populate("user")
-		.populate("product")
+		.populate("products.product")
 		.populate("shippers")
 		.populate("payment")
 		.then((orders) => {
@@ -85,7 +85,7 @@ exports.deleteOrder = (request, response, next) => {
 
 exports.getUserOrder = (req, res) => {
 	errorHandeler(req);
-	Order.find({ user: req.user._id }).sort({order_date:1})
+	Order.find({ user: req.user._id }).sort({ order_date: 1 })
 		.populate("products.product")
 		.populate("user")
 		.populate("shipper")
