@@ -2,22 +2,21 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../Controllers/shopController");
 const isAuth = require("./../middelWare/auth");
-const { body, query, param } = require("express-validator")
+const { body, query, param } = require("express-validator");
 
 router
-    .route("/shop")
+	.route("/shop")
 
-    .get( [], controller.getAllProducts)
+	.get([], controller.getAllProducts)
 
-    .post(controller.addProduct)
+	.post(controller.addProduct)
 
-    .delete( isAuth, controller.deleteProduct)
+	.delete(isAuth, controller.deleteProduct)
 
-    .put(  controller.updateProduct)
+	.put(controller.updateProduct);
 
-router.route("/product")
-    .get( [], controller.getProduct)
+router.route("/product").post([], controller.getProduct);
 
-router.route("/rating").put(controller.updateProductRating)
+router.route("/rating").put(controller.updateProductRating);
 
-module.exports=router;
+module.exports = router;
