@@ -85,7 +85,7 @@ exports.deleteOrder = (request, response, next) => {
 
 exports.getUserOrder = (req, res) => {
 	errorHandeler(req);
-	Order.find({ user: req.user._id }).sort({ order_date: 1 })
+	Order.find({ user: req.user._id }).sort({ _id: 1 })
 		.populate("products.product")
 		.populate("user")
 		.populate("shipper")
