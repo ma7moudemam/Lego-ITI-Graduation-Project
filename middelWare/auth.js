@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 const UserModel = require("./../Models/userModel");
 
 const auth = async (req, res, next) => {
-
 	const token = String(req.get("Authorization")).split(" ")[1];
+	console.log(token);
 	try {
 		const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
@@ -20,7 +20,6 @@ const auth = async (req, res, next) => {
 				res.status(401).send({ error: "Please authenticate" });
 			}
 		} else if (decoded.role == ("admin" || "shipper")) {
-
 			req.email = decoded.email;
 			req.role = decoded.role;
 			next();
@@ -28,7 +27,6 @@ const auth = async (req, res, next) => {
 	} catch (err) {
 		res.status(401).send({ error: "Please authenticate" });
 	}
-
 };
 
 module.exports = auth;
