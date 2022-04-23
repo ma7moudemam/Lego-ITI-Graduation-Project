@@ -31,7 +31,7 @@ const storage = multer.diskStorage({
 		callback(null, new Date().toLocaleDateString().replace(/\//g, "-") + "-" + file.originalname);
 	},
 });
-const limits = { fileSize: 838861 };
+const limits = { fileSize: 8388608 };
 const fileFilter = (request, file, callback) => {
 	if (
 		file.mimetype == "image/webp" ||
