@@ -147,7 +147,7 @@ exports.deleteProfile = (req, res, next) => {
 				if (!user) {
 					return res.status(404).json();
 				}
-				res.status(302).json(user);
+				res.status(200).json(user);
 			})
 			.catch((e) => {
 				res.status(500).json(e);

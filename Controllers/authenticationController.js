@@ -61,15 +61,15 @@ exports.login = (request, response, next) => {
 						.then((data) => {
 							// console.log(data)
 							if (data == null) {
-								throw new Error("You are not in the system Go Out");
+								throw new Error("You are not in the system Please sign up");
 							}
 							if (bcrypt.compareSync(request.body.password, data.password)) {
 								let token = createAccessToken(request.body.email, "shipper", data);
-								console.log("token")
+								console.log("token");
 								let refreshToken = createRefreshToken(request.body.email, "shipper", data);
-								console.log("refresh")
+								console.log("refresh");
 								refreshTokens.push(refreshToken);
-								console.log("response")
+								console.log("response");
 								response.status(200).json({ message: "welcome Shipper", token, refreshToken });
 							} else {
 								throw new Error("Email or Password is not Correct");
