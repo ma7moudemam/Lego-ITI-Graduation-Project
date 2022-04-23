@@ -17,20 +17,21 @@ exports.findShippersOrders = (req, res, next) => {
 	Order.find({ shipper: req.body.id })
 		.populate("user")
 		.populate("products")
-		.then(data => {
-			if (data.length === 0) throw new Error("you don't have orders")
-			res.status(200).json({ message: "You have orders to deliver", orders: data })
-		}).catch(err => next(err))
-}
+		.then((data) => {
+			if (data.length === 0) throw new Error("you don't have orders");
+			res.status(200).json({ message: "You have orders to deliver", orders: data });
+		})
+		.catch((err) => next(err));
+};
 
 exports.getOrder = (req, res, next) => {
 	errorHandeler(req);
-	console.log(req.body)
+	console.log(req.body);
 	Order.find({
 		order_date: {
 			$gte: req.body.date.start,
-			$lt: req.body.date.end
-		}
+			$lt: req.body.date.end,
+		},
 	})
 		.populate("user")
 		.populate("products")
@@ -66,18 +67,19 @@ exports.addOrder = (req, res, next) => {
 
 exports.updateOrder = (request, response, next) => {
 	// errorHandeler(request);
-	console.log(request.body)
-	Order.findById(request.body.id).then((data) => {
-		if (data == null) throw new Error("Order is not Find");
-		data["isDelivered"] = request.body.isDelivered
-		data["isPending"] = request.body.isPending
-		data["isShipped"] = request.body.isShipped
-		// response.status(201).json({ message: "Updated", data });
-		return data.save();
-	}).then(data => {
-		response.status(201).json({ message: "Updated", data });
-
-	})
+	console.log(request.body);
+	Order.findById(request.body.id)
+		.then((data) => {
+			if (data == null) throw new Error("Order is not Find");
+			data["isDelivered"] = request.body.isDelivered;
+			data["isPending"] = request.body.isPending;
+			data["isShipped"] = request.body.isShipped;
+			// response.status(201).json({ message: "Updated", data });
+			return data.save();
+		})
+		.then((data) => {
+			response.status(201).json({ message: "Updated", data });
+		})
 		.catch((err) => next(err));
 };
 
@@ -93,7 +95,8 @@ exports.deleteOrder = (request, response, next) => {
 
 exports.getUserOrder = (req, res) => {
 	errorHandeler(req);
-	Order.find({ user: req.user._id }).sort({ _id: 1 })
+	Order.find({ user: req.user._id })
+		.sort({ _id: -1 })
 		.populate("products.product")
 		.populate("user")
 		.populate("shipper")
